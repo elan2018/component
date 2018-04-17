@@ -1,0 +1,66 @@
+.tree ul{
+    padding-left:20px;
+}
+.tree li{
+    font-size:14px;
+    list-style:none;
+    /*square inside url('../images/close.png');*/
+    line-height: 28px;
+}
+.tree li input {
+    margin-left:2px;
+    margin-right:10px;
+    vertical-align:middle;
+    height:16px;
+    width:16px;
+}
+.tree li div{
+    display: inline;
+}
+.tree li div.turn{
+    display:inline-block;
+    margin-top:5px;
+    float:left;
+    width:18px;
+    height:18px;
+}
+.tree li div.turn-open{
+    display:inline-block;
+    margin-top:5px;
+    float:left;
+    width:18px;
+    height:18px;
+    background: #ffffff url("../images/1.png") no-repeat;
+}
+.tree li div.turn-close{
+    display:inline-block;
+    margin-top:7px;
+    float:left;
+    width:18px;
+    height:18px;
+    background:#ffffff url("../images/2.png") no-repeat;
+}
+.tree li div.select-input{
+    display:inline-block;
+    margin-top:-3px;
+    float:left;
+}
+.tree li div.info{
+    display:inline-block;
+    cursor: default;
+}
+.tree li div.info:hover{
+    background-color: #eeeeee;
+}
+.tree li div.tools{
+    margin-left:-100px;
+    padding-left:100px;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    opacity: 0;
+}
+.tree li div.tools:hover{
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: alpha(opacity=100);
+    opacity: 100;
+}
