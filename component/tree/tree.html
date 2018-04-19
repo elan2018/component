@@ -10,7 +10,7 @@
 
 <div id="tree" style="padding:10px;width:400px;">
     <label>{{title}}</label>
-    <tree v-bind:items="tree.item" v-bind:tools="toolsList" v-on:selects="checkMe" v-on:dome="toolsclick"></tree>
+    <tree v-bind:items="tree.item" v-on:select-item="clickSelectItem" v-bind:tools="toolsList"></tree>
 </div>
 
 <script src="../../js/jquery-3.3.1.min.js"></script>
@@ -45,6 +45,10 @@
                 toolsList:[{id:1,info:'复制',src:'images/1.png'},{id:2,info:'删除',src:'images/2.png'}]
             },
             methods:{
+                clickSelectItem:function(item){//单击条目，返回选择条目的本身及其子级
+                    console.log('单击选择');
+                    console.log(item);
+                },
                 checkMe:function(item){//点击check时，返回的数据
                     // console.log('选择的项');
                     // console.log(item);

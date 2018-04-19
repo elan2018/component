@@ -26,57 +26,60 @@ Vue.component('helptools',{
 Vue.component('item',{
     props:{
         item:{},
+        tools:{},
         checked: Boolean,
         // this allows using the `value` prop for a different purpose
         value: String
     },
     template:'<div>'+
-    '           <div v-bind:class="initTurnIco(item)"   @click="turn(item)" ></div>'+
-    '           <div class="select-input">' +
-    '               <input type="checkbox" v-model="item.check" v-on:change="checkClick(item)"/>' +
-    '               <div v-bind:class="ifConfirmCheck(item,item.layer)" >■</div>' +
-    '           </div>\n' +
-    '           <div class="info" >{{item.name}}' +
-    '               <div style="padding-left:15px;">{{item.info}}</div>' +
-    '           </div>' +
-    '         </div>',
+        '           <div v-bind:class="initTurnIco(item)"   @click="turn(item)" ></div>'+
+        '           <div class="select-input">' +
+        '               <input type="checkbox" v-model="item.check" v-on:change="checkClick(item)"/>' +
+        '               <div v-bind:class="ifConfirmCheck(item,item.layer)" >■</div>' +
+        '           </div>\n' +
+        '           <div class="info" v-on:click="selectItem(item)" >' +
+        '               <span v-on:dblclick="editItem">{{item.name}}</span>' +
+        '               <input type="text" style="display:none;width:100px" v-model="item.name" v-on:blur="cancelEdit(item)">' +
+        '               <div style="padding-left:15px;">{{item.info}}</div>' +
+            '           <span style="display:none">' +
+            '               <img  v-for="tool in tools" v-bind:src="tool.src" v-bind:alt="tool.info" v-on:click="doit(tool.id,item)">' +
+            '           </span>' +
+        '           </div>' +
+        '      </div>',
     methods:{
-        checkClick:function(item){//checkbox改变事件，
+        cancelEdit:function(item){
+            //item.name = $(event.target).val();
+            $(event.target).prev('span').show();
+            $(event.target).hide();
+
+        },
+        editItem:function(){
+            var _tar = $(event.target);
+            _tar.hide();
+            _tar.siblings('input[type="text"]').show().focus();
+        },
+        selectItem:function(item){//选择项目（单击事件）
+            this.$emit('click-item',item);
+        },
+        checkClick:function(item){//checkbox的改变事件，
 
             this.$emit('checkSubItem',item,item.check);
         },
-        lookUpCheck:function(item){
-            var _class='hide';
-            var _check = {
+        ifConfirmCheck:function(item,layer){//是否显示半选
+          var _check = {
                 checkNum:0,
                 unCheckNum:0,
                 totalNum:0
-            };
-            for(var i=0;i<item.subItem.length;i++){
-                _check.totalNum++;
-                if (item.subItem[i].check) {
-                    _check.checkNum++;
-                }else{
-                    _check.unCheckNum ++;
-                }
-                // if (item.subItem[i].subItem.length>0){
-                //     var _sub_check= this.lookUpCheck(item.subItem[i]);
-                //     if (_sub_check.checkNum>0){
-                //         item.check =true;
-                //         // if (_sub_check.checkNum == _sub_check.totalNum){
-                //         //
-                //         // }
-                //     }else{
-                //         item.check =false;
-                //     }
-                // }
-            }
+          };
+          for(var i=0;i<item.subItem.length;i++){
+             _check.totalNum++;
+             if (item.subItem[i].check) {
+                _check.checkNum++;
+             }else{
+                _check.unCheckNum ++;
+             }
+          }
 
-
-            return _check;
-        },
-        ifConfirmCheck:function(item,layer){//是否显示半选
-          var _check = this.lookUpCheck(item);
           if (_check.checkNum==0 && _check.totalNum>0){
               item.check =false;
           }
@@ -119,29 +122,29 @@ Vue.component('item',{
  * 目前最多支持7层
  */
 Vue.component('tree', {
-    props: ['items'],
+    props: ['items','tools'],
     template: '<div class="tree">\n' +
     '               <ul>' +
     '                   <li v-for="item1 in myItem">' +
-    '                       <item :item="item1" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" ></item>\n' +
+    '                       <item :item="item1" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" ></item>\n' +
     '                       <ul v-if="item1.subItem.length>0" >' +
     '                           <li v-for="item2 in item1.subItem">' +
-    '                               <item :item="item2" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem"></item>\n' +
+    '                               <item :item="item2" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
     '                               <ul v-if="item2.subItem.length>0">' +
     '                                   <li v-for="item3 in item2.subItem">' +
-    '                                       <item :item="item3" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem"></item>\n' +
+    '                                       <item :item="item3" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
     '                                       <ul v-if="item3.subItem.length>0">' +
     '                                           <li v-for="item4 in item3.subItem">' +
-    '                                                <item :item="item4" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem"></item>\n' +
+    '                                                <item :item="item4" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
     '                                                <ul v-if="item4.subItem.length>0">' +
     '                                                   <li v-for="item5 in item4.subItem">' +
-    '                                                       <item :item="item5" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem"></item>\n' +
+    '                                                       <item :item="item5" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
     '                                                       <ul v-if="item5.subItem.length>0">' +
     '                                                           <li v-for="item6 in item5.subItem">' +
-    '                                                               <item :item="item6" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem"></item>\n' +
+    '                                                               <item :item="item6" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
     '                                                               <ul v-if="item6.subItem.length>0">' +
     '                                                                   <li v-for="item7 in item6.subItem">' +
-    '                                                                        <item :item="item7" v-on:checkSubItem="eachSubItem"></item>\n' +
+    '                                                                        <item :item="item7" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
     '                                                                   </li>' +
     '                                                               </ul>' +
     '                                                           </li>' +
@@ -168,8 +171,10 @@ Vue.component('tree', {
         this.myItem = this.reve(this.items);
     },
     methods: {
+        selectItem:function(item){//单击选择条目事件
+            this.$emit('select-item',item);
+        },
         eachSubItem:function(item,t) {//向下遍历check
-
             item.check =t;
             if(item.subItem.length>0) {
                 for (var i=0;i<item.subItem.length;i++) {
