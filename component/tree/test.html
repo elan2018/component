@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+<div id="app2">
+    <div>这是父组件的parentArray：{{parentArray}}</div>
+    <my-component :child-array.sync="parentArray"></my-component>
+</div>
+<div id="app5">
+    <my-component3 v-model:value="hello"></my-component3>
+    <div @click="kk">{{hello}}</div>
+    <input type="checkbox" v-model:checked="a.check" >
+</div>
+<div id="app6">
+    <select v-model="currentComponent">
+        <option value="home">home</option>
+        <option value="post">post</option>
+        <option value="about">about</option>
+    </select>
+    <component :is="currentComponent"></component>
+</div>
+<script src="../../js/jquery-3.3.1.min.js"></script>
+<script src="../../js/vue.js" ></script>
+<script>
+    Vue.component('my-component', {
+        template: '<div>这是接收了父组件传递值的子组件的childArray: {{childArray}} <br>' +
+        '<button type="button" @click="changeArray">点击我改变父元素的parentArray</button>' +
+        '</div>',
+        props: ['childArray'],
+        data:function() {
+            return {
+                counter: 1
+            }
+        },
+        methods: {
+            changeArray:function() {
+                this.counter++;
+                this.$emit('update:childArray', this.counter);
+            }
+        }
+    });
+    new Vue({
+        el: '#app2',
+        data: {
+            parentArray: 3
+        }
+    });
+    Vue.component('my-component3', {
+        template: '<input ref="input" type="text" :value="checked" @input="checkInput($event.target.value)">',
+        props: ['checked'],        // 属性名改变
+        model: {
+            prop: 'checked',
+            event: 'change'
+        },
+        methods: {
+            checkInput:function(value) {
+                var hello = 'hello'
+                if (!hello.includes(value)) {
+                    this.$emit('change', hello)   // 事件类型改变
+                    this.$refs.input.value = hello
+                } else {
+                    this.$emit('change', value)  // 事件类型改变
+                }
+            }
+        }
+    });
+    new Vue({
+        el: '#app5',
+        data: {
+            hello: 's',
+            a:{check:true}
+        },
+        methods:{
+            kk:function(){
+                //this.hello ='hhh';
+                console.log(this.a.check);
+            }
+        }
+    });
+    new Vue({
+        el: '#app6',
+        data: {
+            currentComponent: 'home'
+        },
+        components: {
+            home: {
+                template: '<header>这是home组件</header>'
+            },
+            post: {
+                template: '<header>这是post组件</header>'
+            },
+            about: {
+                template: '<header>这是about组件</header>'
+            }
+        }
+    })
+</script>
+</body>
+</html>

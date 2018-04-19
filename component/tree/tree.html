@@ -3,350 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../../css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/tree1.css"/>
     <title>树型组件</title>
-    <style>
-        .tree ul{
-            padding-left:20px;
-        }
-        .tree li{
-            font-size:14px;
-            list-style:none;
-            /*square inside url('../images/close.png');*/
-            line-height: 28px;
-        }
-        .tree li input {
-            margin-left:4px;
-            margin-right:10px;
-            vertical-align:middle;
-            height:16px;
-            width:16px;
-        }
-        .tree li div{
-            display: inline;
-        }
-        .tree li div.turn{
-            display:inline-block;
-            margin-top:5px;
-            float:left;
-            width:16px;
-            height:16px;
-        }
-        .tree li div.turn-open{
-            display:inline-block;
-            margin-top:5px;
-            float:left;
-            width:16px;
-            height:16px;
-            background-image: url("images/open.png");
-        }
-        .tree li div.turn-close{
-            display:inline-block;
-            margin-top:5px;
-            float:left;
-            width:16px;
-            height:16px;
-            background-image: url("images/close.png");
-        }
-        .tree li div.select-input{
-            display:inline-block;
-            margin-top:-3px;
-            float:left;
-        }
-    </style>
-
 </head>
 <body>
 
-<div id="tree" style="padding:10px;">
+<div id="tree" style="padding:10px;width:400px;">
     <label>{{title}}</label>
-    <tree v-bind:items="tree.item" v-on:selects="checkMe"></tree>
+    <tree v-bind:items="tree.item" v-bind:tools="toolsList" v-on:selects="checkMe" v-on:dome="toolsclick"></tree>
 </div>
 
 <script src="../../js/jquery-3.3.1.min.js"></script>
 <script src="../../js/vue.js" ></script>
+<script src="js/tree1.js"></script>
 <script>
-    Vue.component('tree', {
-        props: ['items'],
-        template: '<ul class="tree">\n' +
-                    '        <li v-for="(item,index) in myItem" v-bind:id="item.id" >\n' +
-                    '           <div v-bind:class="showSubItemIcon(item.subItem)" @click="turn" ></div>\n' +
-                    '           <div class="select-input"><input type="checkbox" v-on:click="selectItem(item)" v-bind:checked="item.check"/></div>\n' +
-                    '           <div style="display:inline-block;">{{item.name}}</div>\n' +
-                    '           <ul v-bind:style="showItem(item.subItem)">\n' +
-                    '                   <li v-for="(subItem,subIndex) in item.subItem" v-bind:id="subItem.id" >\n' +
-                    '                       <div v-bind:class="showSubItemIcon(subItem.subItem)" @click="turn" ></div>\n' +
-                    '                       <div class="select-input"><input type="checkbox" v-on:click="selectItem(subItem)" v-bind:checked="subItem.check"/></div>\n' +
-                    '                       <div style="display:inline-block;">{{subItem.name}}</div>\n' +
-                    '                       <tree  v-bind:items="subItem.subItem" v-on:selects="checkMe"></tree>\n' +
-                    '                   </li>\n' +
-                    '            </ul>' +
-                    '        </li>\n' +
-                    '    </ul>',
-        data:function(){
-            return {
-                child_display:true,
-                item_turn_class:'turn-open',
-                myItem:[]
-            }
-        },
-        mounted:function(){
-            this.myItem=reve(this.items);
-           // console.log(this.myItem);
-        },
-        methods: {
-        reve:function(item){
-                var ch = item;
-                ch.sort(function(x, y){
-                    return x.layer+x.pid > y.layer+y.pid ? -1:1;
-                });
-                var tree = ch.slice(0);
-                var temp =-1;
-                for(var it in ch){
-                    temp++;
-                    for(var t=0;t<tree.length;t++){
-                        if (ch[temp].pid == tree[t].id){
-                            tree[t].subItem.splice(0,0,ch[temp]);//{id:ch[temp].id,name:ch[temp].name,pid:ch[temp].pid,layer:ch[temp].layer,subItm:[]});
-                            ch = tree.slice(0);
-                            temp=-1;
-                            break;
-                        }
-                        if (ch[temp].id == tree[t].id){
-                            tree.splice(t, 1);
-                        }
-                    }
-                    if (tree.length==1) {
-                        if (ch[temp].pid == tree[0].id) {
-                            tree[0].subItem.splice(0, 0,ch[0]);// {id:ch[0].id,name:ch[0].name,pid:ch[0].pid,layer:ch[0].layer,subItem:[]});
-                            ch = tree.slice(0);
-                            temp = -1;
-                            break;
-                        }
-                    }
 
-                }
-                return ch;
-            },
-            changeData:function(item,ch1,pid){
-                ch1.push({id:item.id,name:item.name,pid:item.pid,layer:item.layer,check:item.check,subItem:[]});
-                if (item.subItem == undefined || item.subItem.length==0) return ;
-                var subItem = item.subItem;
-                for(var i=0;i<subItem.length;i++){
-                    var it = subItem[i];
-                    ch1.push({id:it.id,name:it.name,check:it.check,pid:pid,layer:it.layer,subItem:[]});
-                    if (it.subItem.length>0) {
-                        var sub = it.subItem.slice();
-                        for (var j = 0; j < sub.length; j++) {
-                            this.changeData(sub[j], ch1,sub[j].pid);
-                        }
-                    }
-                }
-
-            },
-            turn:function(event){//层级展开、收缩
-                var item = $(event.target);
-                if (item.hasClass('turn-close')==false){
-                    item.addClass('turn-close');
-                    item.siblings('ul').slideUp(300);
-
-                }else{
-                    item.removeClass('turn-close');
-                    item.addClass('turn-open');
-                    item.siblings('ul').slideDown(300);
-                }
-            },
-            selectItem:function(item){//点击check
-                var _tar = event.target;
-                var it= $(_tar);
-
-                if (_tar.checked){
-                    this.eachSubItem(item,true);
-                 //   it.parent().siblings('ul').find('input[type="checkbox"]').prop('checked',true);
-
-                }else{
-                    this.eachSubItem(item,false);
-                 //   it.parent().siblings('ul').find('input[type="checkbox"]').prop('checked',false);
-
-                }
-                var returnItem =[];
-                this.changeData(item,returnItem,item.pid);
-                this.$emit('selects',returnItem);
-
-            },
-            checkMe:function(item){
-                this.$emit('selects',item);
-            },
-            eachSubItem:function(item,t) {//向下遍历check
-                item.check =t;
-                if(item.subItem.length>0) {
-                    for (var i=0;i<item.subItem.length;i++) {
-                        var it =item.subItem[i];
-                        it.check =t;
-                        if (it.subItem.length > 0) {
-                            this.eachSubItem(it,t);
-                        }
-                    }
-                }
-            },
-            eachParentItem:function(item,t){
-
-            },
-            showItem:function(item){//初始，是否有子级并显示子级
-                if (item.length>0){
-                    if (this.child_display){
-                        return {display:'block'};
-                    }
-                }
-                return {display:'none'};
-            },
-            showSubItemIcon:function(item){//初始，是否有子级并显示子级图标
-                if (item.length>0){
-                    if (this.child_display){
-                        return 'turn-open';
-                    }else{
-                        return 'turn-close';
-                    }
-                }
-                return 'turn';
-            }
-        }
-    });
-    /**
-     * items:{item:[{id:1,name:'公司名称',check:false,pid:0,layer:0,
-                                subItem:[{id:11,name:'部门1',check:true,pid:1,layer:1,
-                                                subItem:[{id:111,name:'子部门1',check:true,pid:11,layer:2,subItem:[{id:1111,name:'孙子部门1',check:true,pid:111,layer:3,subItem:[]}]},
-                                         {id:112,name:'子部门2',check:false,pid:11,layer:2,subItem:[]}]},
-                            {id:12,name:'部门2',check:true,pid:1,layer:1,subItem:[]}]}]},
-     */
     var lys_tree=new Vue({
-        el: '#tree',
-        data: {tree:
-                {item:
-                    [
-                    {id:1,name:"公司名称",check:false,pid:0,layer:0,subItem:[]},
-                    {id:11,name:"部门1",check:true,pid:1,layer:1,subItem:[]},
-                    {id:111,name:"子部门1",check:true,pid:11,layer:2,subItem:[]},
-                    {id:1111,name:"孙子部门1",check:true,pid:111,layer:3,subItem:[]},
-                 //   {id:11111,name:"曾孙子部门1",check:true,pid:1111,layer:4,subItem:[]},
-                    {id:112,name:"子部门2",check:false,pid:11,layer:2,subItem:[]},
-                    {id:12,name:"部门2",check:true,pid:1,layer:1,subItem:[]}
-                    ]
+            el: '#tree',
+            data: {tree:
+                /**
+                 * items:{item:[{id:1,name:'公司名称',check:false,pid:0,layer:0,
+                                    subItem:[{id:11,name:'部门1',check:true,pid:1,layer:1,
+                                                    subItem:[{id:111,name:'子部门1',check:true,pid:11,layer:2,subItem:[{id:1111,name:'孙子部门1',check:true,pid:111,layer:3,subItem:[]}]},
+                                             {id:112,name:'子部门2',check:false,pid:11,layer:2,subItem:[]}]},
+                                {id:12,name:'部门2',check:true,pid:1,layer:1,subItem:[]}]}]},
+                 */
+                    {item:
+                            [
+                                {id:1,name:"公司名称",check:false,pid:0,layer:0,info:'20人',subItem:[]},
+                                {id:11,name:"部门1",check:false,pid:1,layer:1,info:'10人',subItem:[]},
+                                {id:111,name:"子部门1",check:true,pid:11,layer:2,info:'5人',subItem:[]},
+                                {id:1111,name:"孙子部门1",check:true,pid:111,layer:3,info:'5人',subItem:[]},
+                                {id:11111,name:"曾孙子部门1",check:true,pid:1111,layer:4,info:'5人',subItem:[]},
+                                {id:112,name:"子部门2",check:false,pid:11,layer:2,info:'10人',subItem:[]},
+                                {id:12,name:"部门2",check:true,pid:1,layer:1,info:'10人',subItem:[]}
+                            ]
+                    },
+                abc:[],
+                title:'树形组件',
+                layerData:null,
+                toolsList:[{id:1,info:'复制',src:'images/1.png'},{id:2,info:'删除',src:'images/2.png'}]
+            },
+            methods:{
+                checkMe:function(item){//点击check时，返回的数据
+                    // console.log('选择的项');
+                    // console.log(item);
                 },
-                title:'树形组件'
-        },
-        methods:{
-            checkMe:function(item){
-                console.log('ok');
-                console.log(item);
-            }
-            ,
-            selects:function(item){
-              //  console.log(item);
+                toolsclick:function(id,item){//点击工具按钮，返回的数据
+                    // console.log('tools'+id);
+                    // console.log(item);
+                }
             }
         }
-    }
     );
-    var kk=[{id:1,check:false,pid:0,layer:0,subItem:[{id:11,check:false,pid:1,layer:1,subItem:[{id:111,check:false,pid:11,layer:2,subItem:[]}]},{id:12,check:false,pid:1,layer:1,subItem:[{id:121,check:false,pid:12,layer:2,subItem:[]},{id:122,check:false,pid:12,layer:2,subItem:[]}]}]}];
-    var item ={id:121,check:false,pid:12,subItem:[]};
-    function change(item,ch1,pid){
-        for(var i=0;i<item.length;i++){
-            var it = item[i];
-            ch1.push({id:it.id,name:it.name,check:it.check,pid:pid,layer:it.layer,subItem:[]});
-            if (it.subItem.length>0){
-                var sub = it.subItem.slice();
-                change(sub,ch1,it.id);
-            }
-        }
-    }
 
-    function reve(item,cpp) {
-        for (var t = 0; t < item.length; t++) {
-            //cpp.push(item[t]);
-            console.log(item[t]);
-        }
-        var ch=cpp;
-        ch.sort(function(x, y){
-            return x.layer+x.pid > y.layer+y.pid ? -1:1;
-        });
-        var tree = ch.slice(0);
-        var temp =-1;
-        for(var it in ch){
-            temp++;
-            for(var t=0;t<tree.length;t++){
-                if (tree[t].subItem.length>0){
-                    reve(tree[t].subItem,cpp);
-                }
-                if (ch[temp].pid == tree[t].id){
-                    tree[t].subItem.splice(0,0,ch[temp]);//{id:ch[temp].id,name:ch[temp].name,pid:ch[temp].pid,layer:ch[temp].layer,subItm:[]});
-                    ch = tree.slice(0);
-                    temp=-1;
-                    break;
-                }
-                if (ch[temp].id == tree[t].id){
-                     tree.splice(t, 1);
-                }
-            }
-            if (tree.length==1) {
-                if (ch[temp].pid == tree[0].id) {
-                    tree[0].subItem.splice(0, 0,ch[0]);// {id:ch[0].id,name:ch[0].name,pid:ch[0].pid,layer:ch[0].layer,subItem:[]});
-                    ch = tree.slice(0);
-                    temp = -1;
-                    break;
-                }
-            }
-
-        }
-       // return ch;
-    }
-    function test(item,kp){
-        item.check=true;
-        for(var i=0;i<kp.length;i++){
-            var it = kp[i];
-
-            if (it.id==item.pid){
-                for(var j=0;j<it.subItem.length;j++){
-                    var p=it.subItem[j];
-                    if (p.check==false){
-                        kp[i].check ='min';
-                        if (it.pid!=0){
-                            test(it,kp);
-                        }
-                        break;
-                    }
-                }
-                break;
-            }else{
-                test(item,it.subItem);
-            }
-        }
-    }
-    function objCopy(obj){//对象复制
-        var toObj = JSON.stringify(obj);
-        return JSON.parse(toObj);
-    }
-
-    // var chh=[];
-    // var tp = lys_tree.$data.tree.item.slice();
-    // console.log(tp);
-    // var pp =objCopy(tp);
-    // reve(pp,chh);
-    // console.log(chh);
-    // var ok = objCopy(chh);
-    // var p =reve(ok);
-    // console.log(p);
-
-    // //方法1
-    // var a = [{id:1,subItem:[1,2,3]}];
-    //
-    // var b= $.extend(true,{},a);
-    // a[0].subItem.splice(0,0,{id:2,subItem:[]});
-    // console.log(a);//[3,2,1]
-    // console.log(b);//[1,2,3]
-    // //方法2
-    // var c = [4,5,6];
-    // var d = c.concat();
-    // c.reverse();
-    // console.log(c);//[6,5,4]
-    // console.log(d);//[4,5,6]
 </script>
 </body>
 </html>
