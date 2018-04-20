@@ -1,65 +1,75 @@
-Vue.component('helptools',{
-    template:'<span style="display:none"><img  v-for="tool in tools" v-bind:src="tool.src" v-bind:alt="tool.info" v-on:click="doit(tool.id,item)"></span>',
-    data:function(){
-        return {
-            img:''
-        }
-    },
-    model: {
-        prop: 'checked',        // 将输入的特性改为checked
-        event: 'change'        // 触发的自定义事件类型为change
-    },
-    props: {
-        tools:{},
-        item:{},
-        checked: Boolean,
-        // this allows using the `value` prop for a different purpose
-        value: String
-    },
-    methods:{
-        doit:function(id,item){
-
-            this.$emit('toolsdo',id,item);
-        }
-    }
-});
 Vue.component('item',{
     props:{
         item:{},
         tools:{},
         checked: Boolean,
-        // this allows using the `value` prop for a different purpose
         value: String
     },
-    template:'<div>'+
+    template:'<div v-bind:id="liItemName + item.id"  v-on:mouseenter="showTool(item.id)" v-on:mouseleave="hideTool(item.id)">'+
         '           <div v-bind:class="initTurnIco(item)"   @click="turn(item)" ></div>'+
         '           <div class="select-input">' +
         '               <input type="checkbox" v-model="item.check" v-on:change="checkClick(item)"/>' +
         '               <div v-bind:class="ifConfirmCheck(item,item.layer)" >■</div>' +
         '           </div>\n' +
         '           <div class="info" v-on:click="selectItem(item)" >' +
-        '               <span v-on:dblclick="editItem">{{item.name}}</span>' +
-        '               <input type="text" style="display:none;width:100px" v-model="item.name" v-on:blur="cancelEdit(item)">' +
+        '               <span v-on:dblclick.stop="editItem">{{item.name}}</span>' +
+        '               <input type="text" class="edit" style="display:none;" v-model="item.name" v-on:blur="cancelEdit(item)">' +
         '               <div style="padding-left:15px;">{{item.info}}</div>' +
-            '           <span style="display:none">' +
-            '               <img  v-for="tool in tools" v-bind:src="tool.src" v-bind:alt="tool.info" v-on:click="doit(tool.id,item)">' +
-            '           </span>' +
+        '               <span id="itemTool" style="display:none" >' +
+        '                   <span v-for="tool in tools" class="glyphicon" style="margin:0 10px 0 10px" v-bind:class="tool.src" v-bind:title="tool.info" v-bind:alt="tool.info" v-on:click.stop="doit(tool.id,item)"></span>' +
+        '               </span>' +
         '           </div>' +
         '      </div>',
+    data:function(){
+        return {
+            liItemName:'item',
+            selItemId:'',
+            timeFn:null,
+            sel_item:null,
+            sel_info_obj:null,
+            sel_item_obj:null
+
+        }
+    },
     methods:{
-        cancelEdit:function(item){
-            //item.name = $(event.target).val();
+        doit:function(id,item){//工具条点击事件
+            this.$emit('toolclick',id,item);
+        },
+        hideTool:function(id) {//隐藏工具条
+            var _tar = $(event.target);
+             _tar.find('span#itemTool').hide();
+        },
+        showTool:function(id){//显示工具条
+            var _tar = $(event.target);
+            _tar.find('span#itemTool').show();
+        },
+        cancelEdit:function(item){//取消编辑
             $(event.target).prev('span').show();
             $(event.target).hide();
 
         },
-        editItem:function(){
+        editItem:function(){//编辑
+            clearTimeout(this.timeFn);
             var _tar = $(event.target);
             _tar.hide();
             _tar.siblings('input[type="text"]').show().focus();
         },
         selectItem:function(item){//选择项目（单击事件）
-            this.$emit('click-item',item);
+            //执行延时
+            clearTimeout(this.timeFn);
+            this.sel_item_obj = $(event.target);
+            this.sel_info_obj = $('.info');
+            this.sel_item =item;
+            this.timeFn = setTimeout(this.doSelectItem, 200);//延时时长设置
+
+        },
+        doSelectItem:function(){//实际单击选择处理方法
+            if (this.sel_info_obj.hasClass('select')){
+                    this.sel_info_obj.removeClass('select');
+            }
+            this.sel_item_obj.parent().addClass('select');
+            this.$emit('click-item',this.sel_item);
+
         },
         checkClick:function(item){//checkbox的改变事件，
 
@@ -123,28 +133,28 @@ Vue.component('item',{
  */
 Vue.component('tree', {
     props: ['items','tools'],
-    template: '<div class="tree">\n' +
+    template: '<div class="tree" >\n' +
     '               <ul>' +
-    '                   <li v-for="item1 in myItem">' +
-    '                       <item :item="item1" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" ></item>\n' +
-    '                       <ul v-if="item1.subItem.length>0" >' +
-    '                           <li v-for="item2 in item1.subItem">' +
-    '                               <item :item="item2" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
+    '                   <li>' +
+    '                       <item :item="myItem" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                       <ul v-if="myItem.subItem.length>0" >' +
+    '                           <li v-for="item2 in myItem.subItem">' +
+    '                               <item :item="item2" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                               <ul v-if="item2.subItem.length>0">' +
     '                                   <li v-for="item3 in item2.subItem">' +
-    '                                       <item :item="item3" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
+    '                                       <item :item="item3" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                       <ul v-if="item3.subItem.length>0">' +
     '                                           <li v-for="item4 in item3.subItem">' +
-    '                                                <item :item="item4" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
+    '                                                <item :item="item4" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                <ul v-if="item4.subItem.length>0">' +
     '                                                   <li v-for="item5 in item4.subItem">' +
-    '                                                       <item :item="item5" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
+    '                                                       <item :item="item5" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                       <ul v-if="item5.subItem.length>0">' +
     '                                                           <li v-for="item6 in item5.subItem">' +
-    '                                                               <item :item="item6" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
+    '                                                               <item :item="item6" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                               <ul v-if="item6.subItem.length>0">' +
     '                                                                   <li v-for="item7 in item6.subItem">' +
-    '                                                                        <item :item="item7" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"></item>\n' +
+    '                                                                        <item :item="item7" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
     '                                                                   </li>' +
     '                                                               </ul>' +
     '                                                           </li>' +
@@ -162,15 +172,16 @@ Vue.component('tree', {
     '          </div>',
     data:function(){
         return {
-            myItem:[],
-            childItem:[],
-            child:true
+            myItem: []
         }
     },
     created:function() {
-        this.myItem = this.reve(this.items);
+       this.myItem = this.reve(this.items);
     },
     methods: {
+        toolClick:function(id,item){//工具条单击事件
+            this.$emit('toolclick',id,item);
+        },
         selectItem:function(item){//单击选择条目事件
             this.$emit('select-item',item);
         },
@@ -193,7 +204,6 @@ Vue.component('tree', {
             }else{
                 _tar.addClass('hide');
             }
-            console.log(item);
         },
         reve:function(item){//转换原始数据为组件的数据格式
             item.sort(function(x, y){
@@ -209,11 +219,60 @@ Vue.component('tree', {
                     }
                 }
             }
-            itemOk.push(item[item.length-1]);
-            return itemOk;
+            return item[item.length-1];
         },
-        test:function(){
-            this.child =false;
+        getTreeDataById:function(id){//根据id查询树节点数据
+            var item = this.myItem;
+            var result = null;
+            result = this.searchSubItem(item,id);
+            return result;
+
+        },
+        searchSubItem:function(item,id) {//向下遍历查询
+            var result=null;
+            if (item.id==id){
+                return item;
+            }
+            for (var i=0;i<item.subItem.length;i++) {
+               var it =item.subItem[i];
+               result = this.searchSubItem(it,id);
+               if (result !=null) return result;
+            }
+            return result;
+        },
+        getAllTreeData:function(){//获取整个树组件数据
+            return this.myItem;
+        },
+        addSameNode:function(curId,id,name,check,info){//添加同级节点
+            var p_item = this.getTreeDataById(curId);
+            return this.addChildNode(p_item.pid,id,name,check,info);
+
+        },
+        addChildNode:function(curId,id,name,check,info){//添加下级节点
+            var item = this.getTreeDataById(curId);
+            item.subItem.push({pid:item.id,id:id,name:name,check:check,info:info,layer:item.layer+1,subItem:[]});
+            return item;
+
+        },
+        updateNodeData:function(curId,name,check,info){//编辑当前节点数据
+            var item = this.getTreeDataById(curId);
+            item.name = name;
+            item.check = check;
+            item.info = info;
+            return item;
+        },
+        removeNode:function(id){//删除当前节点，同时子节点
+           var item = this.getTreeDataById(id);
+           if (item==null) return null;
+           var p_item = this.getTreeDataById(item.pid);
+           for(var i=0;i<p_item.subItem.length;i++){
+               //console.log(i+"="+p_item.subItem[i].id);
+               if (p_item.subItem[i].id ==id){
+                   p_item.subItem.splice(i,1);
+                   return 1;
+               }
+           }
+           return 0;
         }
     }
 });

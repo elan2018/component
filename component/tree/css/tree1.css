@@ -50,20 +50,17 @@
     display:inline-block;
     cursor: default;
     padding-left:25px;
+    color:#000;
 }
 .tree li div.info:hover{
     background-color: #eeeeee;
 }
-img.btn{
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
-    filter: alpha(opacity=10);
-    opacity: 10;
+
+.tree li div.info.select{
+    color:#ffffff;
+    background-color:#99CCFF;
 }
-img.btn:hover{
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: alpha(opacity=100);
-    opacity: 100;
-}
+
 .tree li div .checkUnconfirm{
     width:20px;
     height:20px;
@@ -77,4 +74,10 @@ img.btn:hover{
 }
 .tree .hide{
     display:none;
+}
+.tree input[type=text].edit{
+    width:100px;
+    color:#23527c;
+    border: 0 solid #ffffff;
+    /*border-bottom:1px solid #2e6da4;*/
 }

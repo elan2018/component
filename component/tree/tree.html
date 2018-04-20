@@ -10,8 +10,12 @@
 
 <div id="tree" style="padding:10px;width:400px;">
     <label>{{title}}</label>
-    <tree v-bind:items="tree.item" v-on:select-item="clickSelectItem" v-bind:tools="toolsList"></tree>
+    <tree ref="tree" v-bind:items="tree.item" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
+    <button type="button" class="btn btn-default" aria-label="Left Align" >
+        <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
+    </button>
 </div>
+
 
 <script src="../../js/jquery-3.3.1.min.js"></script>
 <script src="../../js/vue.js" ></script>
@@ -42,20 +46,28 @@
                 abc:[],
                 title:'树形组件',
                 layerData:null,
-                toolsList:[{id:1,info:'复制',src:'images/1.png'},{id:2,info:'删除',src:'images/2.png'}]
+                toolsList:[{id:1,info:'复制',src:'glyphicon-save-file'},{id:2,info:'删除',src:'glyphicon-remove'}]
             },
             methods:{
                 clickSelectItem:function(item){//单击条目，返回选择条目的本身及其子级
                     console.log('单击选择');
                     console.log(item);
                 },
-                checkMe:function(item){//点击check时，返回的数据
-                    // console.log('选择的项');
-                    // console.log(item);
+                toolsClick:function(id,item){//点击工具按钮，返回的数据
+                     console.log('tools-click:'+id);
+                     if (id==1){//添加
+                         //console.log('add');
+                         //item.subItem.push({id:13,name:"部门3",check:false,pid:item.pid,layer:item.layer+1,info:'0人',subItem:[]});
+                     }
+
                 },
-                toolsclick:function(id,item){//点击工具按钮，返回的数据
-                    // console.log('tools'+id);
-                    // console.log(item);
+                getTreeData:function(){
+                   // this.$refs.tree.getTreeData();//所有节点数据
+                   // this.$refs.tree.getTreeDataById(111);//根据id获取节点数据
+                   // this.$refs.tree.addSameNode(111,113,'我一样新增的',false,'0人')
+                   // this.$refs.tree.removeNode(113)
+                   // this.$refs.tree.updateNodeData(114,'我一样新增的',true,'10人')
+                   // this.$refs.tree.addChildNode(111,113,'我新增的',false,'0人')
                 }
             }
         }
