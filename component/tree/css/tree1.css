@@ -29,14 +29,14 @@
     display:inline-block;
     margin-top:5px;
     float:left;
-    /*width:18px;*/
+    width:18px;
     height:18px;
 }
 .tree li div.turn-open{
     display:inline-block;
     margin-top:5px;
     float:left;
-    /*width:18px;*/
+    width:18px;
     height:18px;
     background: #ffffff url("../images/1.png") no-repeat;
 }
@@ -44,7 +44,7 @@
     display:inline-block;
     margin-top:7px;
     float:left;
-    /*width:18px;*/
+    width:18px;
     height:18px;
     background:#ffffff url("../images/2.png") no-repeat;
 }

@@ -10,7 +10,7 @@
 
 <div id="tree" style="margin:30px;padding:5px;width:300px;height:400px;overflow:auto;">
     <label>{{title}}</label>
-    <tree style="width:400px;" ref="tree" v-bind:items="tree.item" v-bind:ifcheck="false" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
+    <tree style="width:400px;" ref="tree" v-bind:items="tree.item" v-bind:ifcheck="true" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
 
 </div>
 

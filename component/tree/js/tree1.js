@@ -13,7 +13,7 @@ Vue.component('item',{
         '               <div v-bind:class="ifConfirmCheck(item,item.layer)" >■</div>' +
         '           </div>\n' +
         '           <div v-if="!checkbox" class="select-input">' +
-        '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" >&nbsp;</div>' +
+        '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" ></div>' +
         '           </div>\n' +
         '           <div class="info"  v-on:click="selectItem(item)" >' +
         '               <span v-on:dblclick.stop="editItem">{{item.name}}</span>' +
