@@ -10,10 +10,8 @@
 
 <div id="tree" style="padding:10px;width:400px;">
     <label>{{title}}</label>
-    <tree ref="tree" v-bind:items="tree.item" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
-    <button type="button" class="btn btn-default" aria-label="Left Align" >
-        <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
-    </button>
+    <tree ref="tree" v-bind:items="tree.item" v-bind:ifcheck="false" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
+
 </div>
 
 

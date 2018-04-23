@@ -51,7 +51,9 @@
     cursor: default;
     padding-left:25px;
     color:#000;
+
 }
+
 .tree li div.info:hover{
     background-color: #eeeeee;
 }
@@ -61,7 +63,18 @@
     background-color:#99CCFF;
 }
 
-.tree li div .checkUnconfirm{
+.tree li div .checkUnconfirm {
+    width: 20px;
+    height: 20px;
+    padding-left: 6px;
+    line-height: 20px;
+    color: #999;
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    cursor: default;
+}
+.tree li div .icon{
     width:20px;
     height:20px;
     padding-left:6px;
@@ -69,9 +82,25 @@
     color:#999;
     display: inline-block;
     position: absolute;
-    top:5px;
+    top:9px;
     cursor:default;
+    background:#ffffff url("../images/parent.png") no-repeat;
+    background-size: 16px 16px;
 }
+.tree li div .icon_child{
+    width:20px;
+    height:20px;
+    padding-left:6px;
+    line-height:20px;
+    color:#999;
+    display: inline-block;
+    position: absolute;
+    top:9px;
+    cursor:default;
+    background:#ffffff url("../images/child.png") no-repeat;
+    background-size: 16px 16px;
+}
+
 .tree .hide{
     display:none;
 }

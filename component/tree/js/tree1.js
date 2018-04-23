@@ -2,14 +2,18 @@ Vue.component('item',{
     props:{
         item:{},
         tools:{},
+        checkbox:{},
         checked: Boolean,
         value: String
     },
     template:'<div v-bind:id="liItemName + item.id"  v-on:mouseenter="showTool(item.id)" v-on:mouseleave="hideTool(item.id)">'+
         '           <div v-bind:class="initTurnIco(item)"   @click="turn(item)" ></div>'+
-        '           <div class="select-input">' +
+        '           <div v-if="checkbox" class="select-input">' +
         '               <input type="checkbox" v-model="item.check" v-on:change="checkClick(item)"/>' +
         '               <div v-bind:class="ifConfirmCheck(item,item.layer)" >■</div>' +
+        '           </div>\n' +
+        '           <div v-if="!checkbox" class="select-input">' +
+        '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" >&nbsp;</div>' +
         '           </div>\n' +
         '           <div class="info" v-on:click="selectItem(item)" >' +
         '               <span v-on:dblclick.stop="editItem">{{item.name}}</span>' +
@@ -22,6 +26,8 @@ Vue.component('item',{
         '      </div>',
     data:function(){
         return {
+            icon_p_class:'icon',
+            icon_c_class:'icon_child',
             liItemName:'item',
             selItemId:'',
             timeFn:null,
@@ -132,29 +138,29 @@ Vue.component('item',{
  * 目前最多支持7层
  */
 Vue.component('tree', {
-    props: ['items','tools'],
+    props: ['items','tools','ifcheck'],
     template: '<div class="tree" >\n' +
     '               <ul>' +
     '                   <li>' +
-    '                       <item :item="myItem" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                       <item :item="myItem" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                       <ul v-if="myItem.subItem.length>0" >' +
     '                           <li v-for="item2 in myItem.subItem">' +
-    '                               <item :item="item2" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                               <item :item="item2" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                               <ul v-if="item2.subItem.length>0">' +
     '                                   <li v-for="item3 in item2.subItem">' +
-    '                                       <item :item="item3" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                       <item :item="item3" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                       <ul v-if="item3.subItem.length>0">' +
     '                                           <li v-for="item4 in item3.subItem">' +
-    '                                                <item :item="item4" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                <item :item="item4" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                <ul v-if="item4.subItem.length>0">' +
     '                                                   <li v-for="item5 in item4.subItem">' +
-    '                                                       <item :item="item5" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                       <item :item="item5" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                       <ul v-if="item5.subItem.length>0">' +
     '                                                           <li v-for="item6 in item5.subItem">' +
-    '                                                               <item :item="item6" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                               <item :item="item6" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                               <ul v-if="item6.subItem.length>0">' +
     '                                                                   <li v-for="item7 in item6.subItem">' +
-    '                                                                        <item :item="item7" :tools="tools" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
+    '                                                                        <item :item="item7" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
     '                                                                   </li>' +
     '                                                               </ul>' +
     '                                                           </li>' +
