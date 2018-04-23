@@ -1,11 +1,19 @@
+.tree{
+    /*min-width:400px;*/
+    width:100%;
+    height:100%;
+
+}
 .tree ul{
     padding-left:20px;
+    width:100%;
 }
 .tree li{
     font-size:14px;
     list-style:none;
     /*square inside url('../images/close.png');*/
     line-height: 28px;
+    width:100%;
 }
 .tree li input {
     margin-left:2px;
@@ -21,14 +29,14 @@
     display:inline-block;
     margin-top:5px;
     float:left;
-    width:18px;
+    /*width:18px;*/
     height:18px;
 }
 .tree li div.turn-open{
     display:inline-block;
     margin-top:5px;
     float:left;
-    width:18px;
+    /*width:18px;*/
     height:18px;
     background: #ffffff url("../images/1.png") no-repeat;
 }
@@ -36,7 +44,7 @@
     display:inline-block;
     margin-top:7px;
     float:left;
-    width:18px;
+    /*width:18px;*/
     height:18px;
     background:#ffffff url("../images/2.png") no-repeat;
 }
@@ -51,6 +59,7 @@
     cursor: default;
     padding-left:25px;
     color:#000;
+    /*width:300px;*/
 
 }
 
@@ -84,7 +93,7 @@
     position: absolute;
     top:9px;
     cursor:default;
-    background:#ffffff url("../images/parent.png") no-repeat;
+    background:transparent url("../images/parent.png") no-repeat;
     background-size: 16px 16px;
 }
 .tree li div .icon_child{
@@ -97,7 +106,7 @@
     position: absolute;
     top:9px;
     cursor:default;
-    background:#ffffff url("../images/child.png") no-repeat;
+    background:transparent url("../images/child.png") no-repeat;
     background-size: 16px 16px;
 }
 

@@ -8,10 +8,16 @@
 </head>
 <body>
 
-<div id="tree" style="padding:10px;width:400px;">
+<div id="tree" style="margin:30px;padding:5px;width:300px;height:400px;overflow:auto;">
     <label>{{title}}</label>
-    <tree ref="tree" v-bind:items="tree.item" v-bind:ifcheck="false" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
+    <tree style="width:400px;" ref="tree" v-bind:items="tree.item" v-bind:ifcheck="false" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
 
+</div>
+
+<div style="margin-top:100px;width:200px;height:200px;overflow:auto;">
+    <div style="display:inline-block;background-color: red;width:100%;height:100%;">
+        <div>sdfsfsadfadfadfasdfasdfasfasdfafdadsafafafafsafdasf</div>
+    </div>
 </div>
 
 
@@ -37,6 +43,8 @@
                                 {id:111,name:"子部门1",check:true,pid:11,layer:2,info:'5人',subItem:[]},
                                 {id:1111,name:"孙子部门1",check:true,pid:111,layer:3,info:'5人',subItem:[]},
                                 {id:11111,name:"曾孙子部门1",check:true,pid:1111,layer:4,info:'5人',subItem:[]},
+                                {id:11112,name:"曾孙子部门2",check:true,pid:1111,layer:4,info:'5人',subItem:[]},
+                                {id:111111,name:"曾孙子部门11",check:true,pid:11111,layer:5,info:'5人',subItem:[]},
                                 {id:112,name:"子部门2",check:false,pid:11,layer:2,info:'10人',subItem:[]},
                                 {id:12,name:"部门2",check:true,pid:1,layer:1,info:'10人',subItem:[]}
                             ]

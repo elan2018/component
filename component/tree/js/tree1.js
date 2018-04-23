@@ -6,7 +6,7 @@ Vue.component('item',{
         checked: Boolean,
         value: String
     },
-    template:'<div v-bind:id="liItemName + item.id"  v-on:mouseenter="showTool(item.id)" v-on:mouseleave="hideTool(item.id)">'+
+    template:'<div style="position: relative;width:100%;" v-bind:id="liItemName + item.id"  v-on:mouseenter="showTool(item.id)" v-on:mouseleave="hideTool(item.id)">'+
         '           <div v-bind:class="initTurnIco(item)"   @click="turn(item)" ></div>'+
         '           <div v-if="checkbox" class="select-input">' +
         '               <input type="checkbox" v-model="item.check" v-on:change="checkClick(item)"/>' +
@@ -15,11 +15,11 @@ Vue.component('item',{
         '           <div v-if="!checkbox" class="select-input">' +
         '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" >&nbsp;</div>' +
         '           </div>\n' +
-        '           <div class="info" v-on:click="selectItem(item)" >' +
+        '           <div class="info"  v-on:click="selectItem(item)" >' +
         '               <span v-on:dblclick.stop="editItem">{{item.name}}</span>' +
         '               <input type="text" class="edit" style="display:none;" v-model="item.name" v-on:blur="cancelEdit(item)">' +
         '               <div style="padding-left:15px;">{{item.info}}</div>' +
-        '               <span id="itemTool" style="display:none" >' +
+        '               <span id="itemTool" style="display:none;">' +
         '                   <span v-for="tool in tools" class="glyphicon" style="margin:0 10px 0 10px" v-bind:class="tool.src" v-bind:title="tool.info" v-bind:alt="tool.info" v-on:click.stop="doit(tool.id,item)"></span>' +
         '               </span>' +
         '           </div>' +
@@ -33,11 +33,13 @@ Vue.component('item',{
             timeFn:null,
             sel_item:null,
             sel_info_obj:null,
-            sel_item_obj:null
+            sel_item_obj:null,
+            toolsWidth:{width:this.tools.length*80+'px'}
 
         }
     },
     methods:{
+
         doit:function(id,item){//工具条点击事件
             this.$emit('toolclick',id,item);
         },
