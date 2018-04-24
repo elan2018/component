@@ -76,6 +76,7 @@
     display: inline-block;
     position: absolute;
     top: 5px;
+    left:0;
     cursor: default;
 }
 .tree li div .icon{
