@@ -6,75 +6,136 @@
     <link rel="stylesheet" href="css/tree1.css"/>
     <title>树型组件</title>
 </head>
-<body>
+<body margin="0">
 
-<div id="tree" style="margin:30px;padding:5px;width:300px;height:400px;overflow:auto;">
-    <label>{{title}}</label>
-    <tree style="width:400px;" ref="tree" v-bind:items="tree.item" v-bind:ifcheck="true" v-on:select-item="clickSelectItem" v-bind:tools="toolsList" v-on:toolclick="toolsClick"></tree>
-
-</div>
-
-<div style="margin-top:100px;width:200px;height:200px;overflow:auto;">
-    <div style="display:inline-block;background-color: red;width:100%;height:100%;">
-        <div>sdfsfsadfadfadfasdfasdfasfasdfafdadsafafafafsafdasf</div>
+<div id="tree" style="margin:3px;padding:5px;">
+    <div>
+        <label>{{title}}</label>
     </div>
-</div>
+    <div style="width:350px;height:300px;border:1px solid #dddddd;float:left;overflow: auto;">
+        <tree
+                ref="tree"
+                v-bind:items="tree.item"
+                v-bind:ifcheck="true"
+                v-on:select-item="clickSelectItem"
+                v-bind:tools="toolsList"
+                v-on:toolclick="toolsClick">
+        </tree>
+    </div>
+    <div style="float:left;margin-left:20px;">
+        <button  @click="change">改变树(导入新数据)</button><br>
+        <button  @click="add">添加同级数据</button><br>
+        <button  @click="addChild">添加子级数据</button><br>
+        <button  @click="update">修改当前数据</button><br>
+        <button  @click="remove">删除当前数据</button><br>
 
+    </div>
+    <div style="clear:both;width:90%;box-sizing:border-box;border:1px solid #dddddd;overflow:auto;">
+        <label>用法说明：</label><br>
+        <pre>
+        1、树组件标签：&lt;tree>&lt;/tree>
+        &lt;tree
+            ref="tree"                          --引用树组件的名称
+            v-bind:items="tree.item"            --树组件的数据
+            v-bind:ifcheck="true"               --是否显示checkbox
+            v-on:select-item="clickSelectItem"  --单击节点方法
+            v-bind:tools="toolsList"            --工具条数据
+            v-on:toolclick="toolsClick">        --工具条的单击方法
+        &lt;/tree>
+        </pre>
+        <pre>
+        2、树组件扩展方法：
+        this.$refs.tree.getAllTreeData();       --获取所有节点数据
+        this.$refs.tree.getTreeDataById(111);   --根据id获取节点数据
+        this.$refs.tree.addSameNode(111,113,'我是同级新增的',false,'0人');  --添加同级数据,addSameNode(当前Id,添加的id,名称,check，信息)
+        this.$refs.tree.addChildNode(111,1112,'我是子级新增的',false,'0人'); --添加子级节点,addChildNode(当前Id,添加的id,名称,check，信息)
+        this.$refs.tree.removeNode(111111);        --删除当前节点;removeNode(当前Id)
+        this.$refs.tree.updateNodeData(112,'我是更新的',true,'10人');     --更新当前节点;updateNodeData(当前Id,名称,check，信息)
+        </pre>
+
+    </div>
+
+</div>
 
 <script src="../../js/jquery-3.3.1.min.js"></script>
-<script src="../../js/vue.js" ></script>
+<script src="../../js/vue.js"></script>
 <script src="js/tree1.js"></script>
 <script>
 
-    var lys_tree=new Vue({
+    var lys_tree = new Vue({
             el: '#tree',
-            data: {tree:
-                /**
-                 * items:{item:[{id:1,name:'公司名称',check:false,pid:0,layer:0,
-                                    subItem:[{id:11,name:'部门1',check:true,pid:1,layer:1,
-                                                    subItem:[{id:111,name:'子部门1',check:true,pid:11,layer:2,subItem:[{id:1111,name:'孙子部门1',check:true,pid:111,layer:3,subItem:[]}]},
-                                             {id:112,name:'子部门2',check:false,pid:11,layer:2,subItem:[]}]},
-                                {id:12,name:'部门2',check:true,pid:1,layer:1,subItem:[]}]}]},
-                 */
-                    {item:
+            data: {
+                tree:
+                    {
+                        item:
                             [
-                                {id:1,name:"公司名称",check:false,pid:0,layer:0,info:'20人',subItem:[]},
-                                {id:11,name:"部门1",check:false,pid:1,layer:1,info:'10人',subItem:[]},
-                                {id:111,name:"子部门1",check:true,pid:11,layer:2,info:'5人',subItem:[]},
-                                {id:1111,name:"孙子部门1",check:true,pid:111,layer:3,info:'5人',subItem:[]},
-                                {id:11111,name:"曾孙子部门1",check:true,pid:1111,layer:4,info:'5人',subItem:[]},
-                                {id:11112,name:"曾孙子部门2",check:true,pid:1111,layer:4,info:'5人',subItem:[]},
-                                {id:111111,name:"曾孙子部门11",check:true,pid:11111,layer:5,info:'5人',subItem:[]},
-                                {id:112,name:"子部门2",check:false,pid:11,layer:2,info:'10人',subItem:[]},
-                                {id:12,name:"部门2",check:true,pid:1,layer:1,info:'10人',subItem:[]}
+                                {id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: '20人', subItem: []},
+                                {id: 11, name: "部门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
+                                {id: 111, name: "子部门1", check: true, pid: 11, layer: 2, info: '5人', subItem: []},
+                                {id: 1111, name: "孙子部门1", check: true, pid: 111, layer: 3, info: '5人', subItem: []},
+                                {id: 11111, name: "曾孙子部门1", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
+                                {id: 11112, name: "曾孙子部门2", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
+                                {id: 111111, name: "曾孙子部门11", check: true, pid: 11111, layer: 5, info: '5人', subItem: []},
+                                {id: 112, name: "子部门2", check: false, pid: 11, layer: 2, info: '10人', subItem: []},
+                                {id: 12, name: "部门2", check: true, pid: 1, layer: 1, info: '10人', subItem: []}
                             ]
                     },
-                abc:[],
-                title:'树形组件',
-                layerData:null,
-                toolsList:[{id:1,info:'复制',src:'glyphicon-save-file'},{id:2,info:'删除',src:'glyphicon-remove'}]
+                title: '树形组件',
+                toolsList: [//工具条,src为自定义的样式class名称
+                                {id: 1, info: '复制', src: 'glyphicon-save-file'},
+                                {id: 2, info: '删除', src: 'glyphicon-remove'}
+                            ]
             },
-            methods:{
-                clickSelectItem:function(item){//单击条目，返回选择条目的本身及其子级
-                    console.log('单击选择');
+            methods: {
+                add:function(){
+                    this.$refs.tree.addSameNode(111,113,'我是同级新增的',false,'0人');
+                },
+                addChild:function(){
+                    this.$refs.tree.addChildNode(111,1112,'我是子级新增的',false,'0人');
+                },
+                update:function(){
+                    this.$refs.tree.updateNodeData(112,'我是更新的',true,'10人');
+                },
+                remove:function () {
+                    this.$refs.tree.removeNode(111111);
+                },
+                change: function () {//改变整个树，重新导入数据
+                    var item =
+                        [
+                            {id: 1, name: "aa名称", check: false, pid: 0, layer: 0, info: '20人', subItem: []},
+                            {id: 11, name: "bb门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
+                            {id: 12, name: "bb部门2", check: true, pid: 1, layer: 1, info: '10人', subItem: []}
+                        ];
+                    this.$refs.tree.reCreateTree(item);
+                },
+                clickSelectItem: function (item) {//单击条目，返回选择条目的本身及其子级,此方法
+                    console.log('单击选择，item为返回的数据');
                     console.log(item);
                 },
-                toolsClick:function(id,item){//点击工具按钮，返回的数据
-                     console.log('tools-click:'+id);
-                     if (id==1){//添加
-                         //console.log('add');
-                         //item.subItem.push({id:13,name:"部门3",check:false,pid:item.pid,layer:item.layer+1,info:'0人',subItem:[]});
-                     }
-
-                },
-                getTreeData:function(){
-                   // this.$refs.tree.getTreeData();//所有节点数据
-                   // this.$refs.tree.getTreeDataById(111);//根据id获取节点数据
-                   // this.$refs.tree.addSameNode(111,113,'我一样新增的',false,'0人')
-                   // this.$refs.tree.removeNode(113)
-                   // this.$refs.tree.updateNodeData(114,'我一样新增的',true,'10人')
-                   // this.$refs.tree.addChildNode(111,113,'我新增的',false,'0人')
+                toolsClick: function (id, item) {//点击工具按钮，返回的数据
+                    console.log('tools-click:' + id);
+                    switch (id) {
+                        case 1://添加，根据I的判断功能，功能自定义
+                            console.log('添加');
+                            break;
+                        case 2://删除
+                            console.log('删除');
+                            break;
+                        default:
+                            console.log('其他');
+                    }
                 }
+                /**
+                 * 其他扩展方法
+                 */
+                // this.$refs.tree.getAllTreeData();//所有节点数据
+                // this.$refs.tree.getTreeDataById(111);//根据id获取节点数据
+                // this.$refs.tree.addSameNode(111,113,'我一样新增的',false,'0人');//添加同级数据,addSameNode(当前Id,添加的id,名称,check，信息)
+                // this.$refs.tree.addChildNode(111,113,'我新增的',false,'0人');//添加子级节点,addChildNode(当前Id,添加的id,名称,check，信息)
+                // this.$refs.tree.removeNode(113);//删除当前节点;removeNode(当前Id)
+                // this.$refs.tree.updateNodeData(114,'我一样新增的',true,'10人');//更新当前节点;updateNodeData(当前Id,名称,check，信息)
+
+
             }
         }
     );

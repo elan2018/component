@@ -6,18 +6,18 @@ Vue.component('item',{
         checked: Boolean,
         value: String
     },
-    template:'<div style="position: relative;width:100%;" v-bind:id="liItemName + item.id"  v-on:mouseenter="showTool(item.id)" v-on:mouseleave="hideTool(item.id)">'+
+    template:'<div style="position: relative;" v-bind:style="tw(item)" v-bind:id="liItemName + item.id"  v-on:mouseenter="showTool(item.id)" v-on:mouseleave="hideTool(item.id)">'+
         '           <div v-bind:class="initTurnIco(item)"   @click="turn(item)" ></div>'+
         '           <div v-if="checkbox" class="select-input">' +
         '               <input type="checkbox" v-model="item.check" v-on:change="checkClick(item)"/>' +
-        '               <div v-bind:class="ifConfirmCheck(item,item.layer)" >■</div>' +
+        '               <div v-bind:class="ifConfirmCheck(item,item.layer)" v-on:click="unConfirmCheckClick(item)">■</div>' +
         '           </div>\n' +
         '           <div v-if="!checkbox" class="select-input">' +
         '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" ></div>' +
         '           </div>\n' +
         '           <div class="info"  v-on:click="selectItem(item)" >' +
-        '               <span v-on:dblclick.stop="editItem">{{item.name}}</span>' +
-        '               <input type="text" class="edit" style="display:none;" v-model="item.name" v-on:blur="cancelEdit(item)">' +
+        '               <span v-on:dblclick.stop="editItem" :title="item.name" >{{item.name}}</span>' +
+        '               <input type="text" class="edit" style="display:none;" v-bind:style="tw_info(item)" v-model="item.name" v-on:blur="cancelEdit(item)">' +
         '               <div style="padding-left:15px;">{{item.info}}</div>' +
         '               <span id="itemTool" style="display:none;">' +
         '                   <span v-for="tool in tools" class="glyphicon" style="margin:0 10px 0 10px" v-bind:class="tool.src" v-bind:title="tool.info" v-bind:alt="tool.info" v-on:click.stop="doit(tool.id,item)"></span>' +
@@ -33,13 +33,16 @@ Vue.component('item',{
             timeFn:null,
             sel_item:null,
             sel_info_obj:null,
-            sel_item_obj:null,
-            toolsWidth:{width:this.tools.length*80+'px'}
-
+            sel_item_obj:null
         }
     },
     methods:{
-
+        tw:function(item){
+          return {width:(item.name.length*15+item.info.length*15+80+this.tools.length*35)+'px'};
+        },
+        tw_info:function(item){
+            return {width:(item.name.length*15+10)+'px'};
+        },
         doit:function(id,item){//工具条点击事件
             this.$emit('toolclick',id,item);
         },
@@ -82,6 +85,12 @@ Vue.component('item',{
         checkClick:function(item){//checkbox的改变事件，
 
             this.$emit('checkSubItem',item,item.check);
+        },
+        unConfirmCheckClick:function(item){//半选状态的点击事件，
+            if (item.check==false){
+                item.check=true;
+            }
+            this.checkClick(item);
         },
         ifConfirmCheck:function(item,layer){//是否显示半选
           var _check = {
@@ -142,7 +151,7 @@ Vue.component('item',{
 Vue.component('tree', {
     props: ['items','tools','ifcheck'],
     template: '<div class="tree" >\n' +
-    '               <ul>' +
+    '               <ul style="padding-left:5px;">' +
     '                   <li>' +
     '                       <item :item="myItem" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                       <ul v-if="myItem.subItem.length>0" >' +
@@ -281,6 +290,18 @@ Vue.component('tree', {
                }
            }
            return 0;
+        },
+        reCreateTree:function(item){
+            var _item =this.reve(item);
+            var treeData = this.getAllTreeData();
+            treeData.name = _item.name;
+            treeData.id = _item.id;
+            treeData.pid = _item.pid;
+            treeData.check = _item.check;
+            treeData.info = _item.info;
+            treeData.layer = _item.layer;
+            treeData.subItem = _item.subItem;
         }
+
     }
 });
