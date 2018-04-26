@@ -5,6 +5,25 @@
     <link rel="stylesheet" href="../../css/bootstrap.css"/>
     <link rel="stylesheet" href="css/tree1.css"/>
     <title>树型组件</title>
+    <style>
+        ::-webkit-scrollbar-track {
+            background-color:#ffffff;
+        }
+        ::-webkit-scrollbar {
+            width:7px;
+            height:7px;
+            background-color:green;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color:#eeeeee;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color:#999999;
+        }
+        ::-webkit-scrollbar-track:hover {
+            background-color:#dddddd;
+        }
+    </style>
 </head>
 <body margin="0">
 
@@ -23,12 +42,14 @@
         </tree>
     </div>
     <div style="float:left;margin-left:20px;">
+        <button  @click="getStatus">获取树的编辑状态</button><br>
+        <button  @click="initStatus">初始树的编辑状态</button><br>
         <button  @click="change">改变树(导入新数据)</button><br>
         <button  @click="add">添加同级数据</button><br>
         <button  @click="addChild">添加子级数据</button><br>
         <button  @click="update">修改当前数据</button><br>
         <button  @click="remove">删除当前数据</button><br>
-
+        <label id="info"></label>
     </div>
     <div style="clear:both;width:90%;box-sizing:border-box;border:1px solid #dddddd;overflow:auto;">
         <label>用法说明：</label><br>
@@ -45,6 +66,8 @@
         </pre>
         <pre>
         2、树组件扩展方法：
+        this.$refs.tree.getTreeStatus();        --获取树的编辑状态
+        this.$refs.tree.renewTreeStatus();      --初始树的编辑状态
         this.$refs.tree.getAllTreeData();       --获取所有节点数据
         this.$refs.tree.getTreeDataById(111);   --根据id获取节点数据
         this.$refs.tree.addSameNode(111,113,'我是同级新增的',false,'0人');  --添加同级数据,addSameNode(当前Id,添加的id,名称,check，信息)
@@ -87,6 +110,12 @@
                             ]
             },
             methods: {
+                getStatus:function(){
+                    $("#info").html('当前树组件的数据是否被修改：'+this.$refs.tree.getTreeStatus());
+                },
+                initStatus:function(){
+                    $("#info").html('初始状态'+this.$refs.tree.renewTreeStatus());
+                },
                 add:function(){
                     this.$refs.tree.addSameNode(111,113,'我是同级新增的',false,'0人');
                 },
@@ -125,16 +154,6 @@
                             console.log('其他');
                     }
                 }
-                /**
-                 * 其他扩展方法
-                 */
-                // this.$refs.tree.getAllTreeData();//所有节点数据
-                // this.$refs.tree.getTreeDataById(111);//根据id获取节点数据
-                // this.$refs.tree.addSameNode(111,113,'我一样新增的',false,'0人');//添加同级数据,addSameNode(当前Id,添加的id,名称,check，信息)
-                // this.$refs.tree.addChildNode(111,113,'我新增的',false,'0人');//添加子级节点,addChildNode(当前Id,添加的id,名称,check，信息)
-                // this.$refs.tree.removeNode(113);//删除当前节点;removeNode(当前Id)
-                // this.$refs.tree.updateNodeData(114,'我一样新增的',true,'10人');//更新当前节点;updateNodeData(当前Id,名称,check，信息)
-
 
             }
         }

@@ -36,6 +36,7 @@ Vue.component('item',{
             sel_item_obj:null
         }
     },
+
     methods:{
         tw:function(item){
           return {width:(item.name.length*15+item.info.length*15+80+this.tools.length*35)+'px'};
@@ -189,13 +190,37 @@ Vue.component('tree', {
     '          </div>',
     data:function(){
         return {
-            myItem: []
+            myItem: [],
+            isModify:false,
+            init_Status:0
         }
     },
     created:function() {
        this.myItem = this.reve(this.items);
+       this.modify =false;
+    },
+    watch:{
+        myItem:{
+            handler:function(curVal) {
+                if (this.init_Status == 0) {
+                    this.init_Status++;
+                } else {
+                    console.log('修改了树组件.....');
+                    this.isModify = true;
+                    this.init_Status++;
+                }
+            },
+            deep:true//对象内部的属性监听，也叫深度监听
+        }
     },
     methods: {
+        getTreeStatus:function(){//获取组件修改状态
+            return this.isModify;
+        },
+        renewTreeStatus:function(){//重置组件初始状态
+            this.isModify =false;
+            return 'ok';
+        },
         toolClick:function(id,item){//工具条单击事件
             this.$emit('toolclick',id,item);
         },
@@ -236,6 +261,7 @@ Vue.component('tree', {
                     }
                 }
             }
+            this.renewTreeStatus();
             return item[item.length-1];
         },
         getTreeDataById:function(id){//根据id查询树节点数据
