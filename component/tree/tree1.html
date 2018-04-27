@@ -35,7 +35,7 @@
         <tree
                 ref="tree"
                 v-bind:items="tree.item"
-                v-bind:ifcheck="true"
+                v-bind:ifcheck="false"
                 v-on:select-item="clickSelectItem"
                 v-bind:tools="toolsList"
                 v-on:toolclick="toolsClick">
@@ -45,6 +45,7 @@
         <button  @click="getStatus">获取树的编辑状态</button><br>
         <button  @click="initStatus">初始树的编辑状态</button><br>
         <button  @click="change">改变树(导入新数据)</button><br>
+        <button  @click="selected">选择节点</button><br>
         <button  @click="add">添加同级数据</button><br>
         <button  @click="addChild">添加子级数据</button><br>
         <button  @click="update">修改当前数据</button><br>
@@ -70,6 +71,7 @@
         this.$refs.tree.renewTreeStatus();      --初始树的编辑状态
         this.$refs.tree.getAllTreeData();       --获取所有节点数据
         this.$refs.tree.getTreeDataById(111);   --根据id获取节点数据
+        this.$refs.tree.getItemInfoFocus(11);   --根据id选择节点，并返回当前节点数据
         this.$refs.tree.addSameNode(111,113,'我是同级新增的',false,'0人');  --添加同级数据,addSameNode(当前Id,添加的id,名称,check，信息)
         this.$refs.tree.addChildNode(111,1112,'我是子级新增的',false,'0人'); --添加子级节点,addChildNode(当前Id,添加的id,名称,check，信息)
         this.$refs.tree.removeNode(111111);        --删除当前节点;removeNode(当前Id)
@@ -86,13 +88,13 @@
 <script>
 
     var lys_tree = new Vue({
-            el: '#tree',
+        el: '#tree',
             data: {
                 tree:
                     {
                         item:
                             [
-                                {id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: '20人', subItem: []},
+                                {id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: '', subItem: []},
                                 {id: 11, name: "部门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
                                 {id: 111, name: "子部门1", check: true, pid: 11, layer: 2, info: '5人', subItem: []},
                                 {id: 1111, name: "孙子部门1", check: true, pid: 111, layer: 3, info: '5人', subItem: []},
@@ -121,6 +123,9 @@
                 },
                 addChild:function(){
                     this.$refs.tree.addChildNode(111,1112,'我是子级新增的',false,'0人');
+                },
+                selected:function(){
+                    this.$refs.tree.getItemInfoFocus(11);
                 },
                 update:function(){
                     this.$refs.tree.updateNodeData(112,'我是更新的',true,'10人');

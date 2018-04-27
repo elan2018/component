@@ -1,8 +1,16 @@
+/**
+ name:Tree JS
+ Ver:1.0
+ create:2018-04-16
+ update:2018-04-27
+ */
+
 Vue.component('item',{
     props:{
         item:{},
         tools:{},
         checkbox:{},
+        selValue:{},  //单选的名称
         checked: Boolean,
         value: String
     },
@@ -13,9 +21,10 @@ Vue.component('item',{
         '               <div v-bind:class="ifConfirmCheck(item,item.layer)" v-on:click="unConfirmCheckClick(item)">■</div>' +
         '           </div>\n' +
         '           <div v-if="!checkbox" class="select-input">' +
-        '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" ></div>' +
+       // '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" ></div>' +
+        '               <input type="radio"  name="tree_select" v-model="selValue.selectId" v-bind:value="item.id"/>' +
         '           </div>\n' +
-        '           <div class="info"  v-on:click="selectItem(item)" >' +
+        '           <div class="info"  v-on:click="selectItem(item)" v-bind:class="selectedStatus(item)">' +
         '               <span v-on:dblclick.stop="editItem" :title="item.name" >{{item.name}}</span>' +
         '               <input type="text" class="edit" style="display:none;" v-bind:style="tw_info(item)" v-model="item.name" v-on:blur="cancelEdit(item)">' +
         '               <div style="padding-left:15px;">{{item.info}}</div>' +
@@ -33,13 +42,22 @@ Vue.component('item',{
             timeFn:null,
             sel_item:null,
             sel_info_obj:null,
-            sel_item_obj:null
+            sel_item_obj:null,
+            item_tab:0
+
         }
     },
 
     methods:{
+        itemTabId:function(){
+          return this.item_tab++;
+        },
         tw:function(item){
-          return {width:(item.name.length*15+item.info.length*15+80+this.tools.length*35)+'px'};
+            var info_w=15;
+            if (item.info.length>1){
+                info_w = item.info.length*15;
+            }
+          return {width:(item.name.length*15+info_w+80+this.tools.length*35)+'px'};
         },
         tw_info:function(item){
             return {width:(item.name.length*15+10)+'px'};
@@ -66,13 +84,21 @@ Vue.component('item',{
             _tar.hide();
             _tar.siblings('input[type="text"]').show().focus();
         },
-        selectItem:function(item){//选择项目（单击事件）
+        selectedStatus:function(item){//选中节点后，添加选择效果
+            if(this.selValue.selectId ==item.id){
+                return 'select';
+            }
+            return '';
+        },
+        selectItem:function(item){//单击选择事件
+            this.selValue.selectName = item.name;
+            this.selValue.selectId = item.id;
             //执行延时
             clearTimeout(this.timeFn);
             this.sel_item_obj = $(event.target);
             this.sel_info_obj = $('.info');
             this.sel_item =item;
-            this.timeFn = setTimeout(this.doSelectItem, 200);//延时时长设置
+            this.timeFn = setTimeout(this.doSelectItem, 50);//延时时长设置
 
         },
         doSelectItem:function(){//实际单击选择处理方法
@@ -154,25 +180,25 @@ Vue.component('tree', {
     template: '<div class="tree" >\n' +
     '               <ul style="padding-left:5px;">' +
     '                   <li>' +
-    '                       <item :item="myItem" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                       <item :item="myItem" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                       <ul v-if="myItem.subItem.length>0" >' +
     '                           <li v-for="item2 in myItem.subItem">' +
-    '                               <item :item="item2" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                               <item :item="item2" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                               <ul v-if="item2.subItem.length>0">' +
     '                                   <li v-for="item3 in item2.subItem">' +
-    '                                       <item :item="item3" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                       <item :item="item3" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                       <ul v-if="item3.subItem.length>0">' +
     '                                           <li v-for="item4 in item3.subItem">' +
-    '                                                <item :item="item4" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                <item :item="item4" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                <ul v-if="item4.subItem.length>0">' +
     '                                                   <li v-for="item5 in item4.subItem">' +
-    '                                                       <item :item="item5" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                       <item :item="item5" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                       <ul v-if="item5.subItem.length>0">' +
     '                                                           <li v-for="item6 in item5.subItem">' +
-    '                                                               <item :item="item6" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                               <item :item="item6" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
     '                                                               <ul v-if="item6.subItem.length>0">' +
     '                                                                   <li v-for="item7 in item6.subItem">' +
-    '                                                                        <item :item="item7" :tools="tools" :checkbox="ifcheck" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
+    '                                                                        <item :item="item7" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
     '                                                                   </li>' +
     '                                                               </ul>' +
     '                                                           </li>' +
@@ -192,7 +218,12 @@ Vue.component('tree', {
         return {
             myItem: [],
             isModify:false,
-            init_Status:0
+            init_Status:0,
+            infoItemName:'info_item_name',
+            selValue:{
+                selectName:'',
+                selectId:0
+            }  //单选的名称
         }
     },
     created:function() {
@@ -225,6 +256,8 @@ Vue.component('tree', {
             this.$emit('toolclick',id,item);
         },
         selectItem:function(item){//单击选择条目事件
+           // item.select =true;
+          //  console.log('radio');
             this.$emit('select-item',item);
         },
         eachSubItem:function(item,t) {//向下遍历check
@@ -264,12 +297,17 @@ Vue.component('tree', {
             this.renewTreeStatus();
             return item[item.length-1];
         },
+        getItemInfoFocus:function(id){
+            var item =this.getTreeDataById(id);
+            this.selValue.selectName = item.name;
+            this.selValue.selectId = item.id;
+            return item;
+        },
         getTreeDataById:function(id){//根据id查询树节点数据
             var item = this.myItem;
             var result = null;
             result = this.searchSubItem(item,id);
             return result;
-
         },
         searchSubItem:function(item,id) {//向下遍历查询
             var result=null;
