@@ -94,24 +94,64 @@
                     {
                         item:
                             [
-                                {id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: '', subItem: []},
-                                {id: 11, name: "部门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
-                                {id: 111, name: "子部门1", check: true, pid: 11, layer: 2, info: '5人', subItem: []},
-                                {id: 1111, name: "孙子部门1", check: true, pid: 111, layer: 3, info: '5人', subItem: []},
-                                {id: 11111, name: "曾孙子部门1", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
-                                {id: 11112, name: "曾孙子部门2", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
-                                {id: 111111, name: "曾孙子部门11", check: true, pid: 11111, layer: 5, info: '5人', subItem: []},
-                                {id: 112, name: "子部门2", check: false, pid: 11, layer: 2, info: '10人', subItem: []},
-                                {id: 12, name: "部门2", check: true, pid: 1, layer: 1, info: '10人', subItem: []}
+                                // {id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: '', subItem: []},
+                                // {id: 11, name: "部门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
+                                // {id: 111, name: "子部门1", check: true, pid: 11, layer: 2, info: '5人', subItem: []},
+                                // {id: 1111, name: "孙子部门1", check: true, pid: 111, layer: 3, info: '5人', subItem: []},
+                                // {id: 11111, name: "曾孙子部门1", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
+                                // {id: 11112, name: "曾孙子部门2", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
+                                // {id: 111111, name: "曾孙子部门11", check: true, pid: 11111, layer: 5, info: '5人', subItem: []},
+                                // {id: 112, name: "子部门2", check: false, pid: 11, layer: 2, info: '10人', subItem: []},
+                                // {id: 12, name: "部门2", check: true, pid: 1, layer: 1, info: '10人', subItem: []}
                             ]
                     },
                 title: '树形组件',
                 toolsList: [//工具条,src为自定义的样式class名称
                                 {id: 1, info: '复制', src: 'glyphicon-save-file'},
                                 {id: 2, info: '删除', src: 'glyphicon-remove'}
-                            ]
+                            ],
+                l_TreeStatus:{
+                    changeNum:0
+                }//监听对象
+            },
+            created:function(){
+               var load = setTimeout(this.loadData,50);//模拟网络请求
+            },
+            watch:{
+                l_TreeStatus:{
+                    handler:function(val){
+                        console.log(this.l_TreeStatus.changeNum);
+                        if (this.l_TreeStatus.changeNum>0) {
+                            this.$refs.tree.reCreateTree(this.tree.item);
+                        }
+                    },
+                    deep:true
+                }
             },
             methods: {
+                loadData:function(){
+                    console.log('初始加载树，从后端获取数据.......');
+                    var item =
+                        [
+                            {id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: '', subItem: []},
+                            {id: 11, name: "部门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
+                            {id: 111, name: "子部门1", check: true, pid: 11, layer: 2, info: '5人', subItem: []},
+                            {id: 1111, name: "孙子部门1", check: true, pid: 111, layer: 3, info: '5人', subItem: []},
+                            {id: 11111, name: "曾孙子部门1", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
+                            {id: 11112, name: "曾孙子部门2", check: true, pid: 1111, layer: 4, info: '5人', subItem: []},
+                            {id: 111111, name: "曾孙子部门11", check: true, pid: 11111, layer: 5, info: '5人', subItem: []},
+                            {id: 112, name: "子部门2", check: false, pid: 11, layer: 2, info: '10人', subItem: []},
+                            {id: 12, name: "部门2", check: true, pid: 1, layer: 1, info: '10人', subItem: []}
+                        ];
+                    if (this.tree.item.length>0){
+                        this.tree.item.splice(0,this.tree.item.length);
+                    }
+                    for(var i=0;i<item.length;i++){
+                        this.tree.item.push(item[i]);
+                    }
+                    this.l_TreeStatus.changeNum ++;
+
+                },
                 getStatus:function(){
                     $("#info").html('当前树组件的数据是否被修改：'+this.$refs.tree.getTreeStatus());
                 },
@@ -140,7 +180,13 @@
                             {id: 11, name: "bb门1", check: false, pid: 1, layer: 1, info: '10人', subItem: []},
                             {id: 12, name: "bb部门2", check: true, pid: 1, layer: 1, info: '10人', subItem: []}
                         ];
-                    this.$refs.tree.reCreateTree(item);
+                    if (this.tree.item.length>0){
+                        this.tree.item.splice(0,this.tree.item.length);
+                    }
+                    for(var i=0;i<item.length;i++){
+                        this.tree.item.push(item[i]);
+                    }
+                    this.l_TreeStatus.changeNum++;
                 },
                 clickSelectItem: function (item) {//单击条目，返回选择条目的本身及其子级,此方法
                     console.log('单击选择，item为返回的数据');

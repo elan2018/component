@@ -1,6 +1,6 @@
 /**
  name:Tree JS
- Ver:1.0
+ Ver:2.0
  create:2018-04-16
  update:2018-04-27
  */
@@ -180,25 +180,25 @@ Vue.component('tree', {
     template: '<div class="tree" >\n' +
     '               <ul style="padding-left:5px;">' +
     '                   <li>' +
-    '                       <item :item="myItem" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
-    '                       <ul v-if="myItem.subItem.length>0" >' +
+    '                       <item v-if="isCreateItem(myItem)" :item="myItem" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                       <ul v-if="isCreateChild(myItem)" >' +
     '                           <li v-for="item2 in myItem.subItem">' +
-    '                               <item :item="item2" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
-    '                               <ul v-if="item2.subItem.length>0">' +
+    '                               <item v-if="isCreateItem(item2)" :item="item2" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                               <ul v-if="isCreateChild(item2)">' +
     '                                   <li v-for="item3 in item2.subItem">' +
-    '                                       <item :item="item3" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
-    '                                       <ul v-if="item3.subItem.length>0">' +
+    '                                       <item v-if="isCreateItem(item3)" :item="item3" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                       <ul v-if="isCreateChild(item3)">' +
     '                                           <li v-for="item4 in item3.subItem">' +
-    '                                                <item :item="item4" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
-    '                                                <ul v-if="item4.subItem.length>0">' +
+    '                                                <item v-if="isCreateItem(item4)" :item="item4" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                <ul v-if="isCreateChild(item4)">' +
     '                                                   <li v-for="item5 in item4.subItem">' +
-    '                                                       <item :item="item5" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
-    '                                                       <ul v-if="item5.subItem.length>0">' +
+    '                                                       <item v-if="isCreateItem(item5)" :item="item5" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                       <ul v-if="isCreateChild(item5)">' +
     '                                                           <li v-for="item6 in item5.subItem">' +
-    '                                                               <item :item="item6" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
-    '                                                               <ul v-if="item6.subItem.length>0">' +
+    '                                                               <item v-if="isCreateItem(item6)" :item="item6" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem" v-on:toolclick="toolClick"></item>\n' +
+    '                                                               <ul v-if="isCreateChild(item6)">' +
     '                                                                   <li v-for="item7 in item6.subItem">' +
-    '                                                                        <item :item="item7" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
+    '                                                                        <item v-if="isCreateItem(item7)" :item="item7" :tools="tools" :checkbox="ifcheck" :selValue="selValue" v-on:turn="showSubItem" v-on:checkSubItem="eachSubItem" v-on:click-item="selectItem"v-on:toolclick="toolClick"></item>\n' +
     '                                                                   </li>' +
     '                                                               </ul>' +
     '                                                           </li>' +
@@ -216,7 +216,7 @@ Vue.component('tree', {
     '          </div>',
     data:function(){
         return {
-            myItem: [],
+            myItem: {},
             isModify:false,
             init_Status:0,
             infoItemName:'info_item_name',
@@ -229,6 +229,7 @@ Vue.component('tree', {
     created:function() {
        this.myItem = this.reve(this.items);
        this.modify =false;
+
     },
     watch:{
         myItem:{
@@ -245,6 +246,22 @@ Vue.component('tree', {
         }
     },
     methods: {
+        isCreateChild:function(item){
+            if ('subItem' in item && Object.prototype.toString.call(item.subItem) === '[object Array]') {
+                if (this.myItem.subItem.length > 0) return true;
+            }
+            return false;
+        },
+        isCreateItem:function(item){
+            if (('subItem' in item) && ('id' in item) && ('name' in item) && ('pid' in item) && ('check' in item) && ('info' in item)){
+
+                return true;
+            }
+            console.error('树组件的初始化数据格式不正确！');
+            console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", subItem: []}]');
+
+            return false;
+        },
         getTreeStatus:function(){//获取组件修改状态
             return this.isModify;
         },
@@ -256,8 +273,6 @@ Vue.component('tree', {
             this.$emit('toolclick',id,item);
         },
         selectItem:function(item){//单击选择条目事件
-           // item.select =true;
-          //  console.log('radio');
             this.$emit('select-item',item);
         },
         eachSubItem:function(item,t) {//向下遍历check
@@ -281,21 +296,42 @@ Vue.component('tree', {
             }
         },
         reve:function(item){//转换原始数据为组件的数据格式
-            item.sort(function(x, y){
-                return x.layer + x.id > y.layer +y.id ? -1:1;
-            });
-            var itemC = item;
-            var itemOk =[];
-            for(var t=0;t<item.length;t++){
-                for(var f=1;f<itemC.length;f++){
-                    if (item[t].pid==itemC[f].id){
-                        itemC[f].subItem.push(item[t]);
-                        break;
+            if (Object.prototype.toString.call(item) === '[object Array]') {
+                item.sort(function (x, y) {
+                    return x.layer + x.id > y.layer + y.id ? -1 : 1;
+                });
+                var itemC = item;
+                var itemOk = [];
+                for (var t = 0; t < item.length; t++) {
+                    for (var f = 1; f < itemC.length; f++) {
+                        if (item[t].pid == itemC[f].id) {
+                            if ('subItem' in itemC[f] &&
+                                Object.prototype.toString.call(itemC[f].subItem) === '[object Array]') {
+                                itemC[f].subItem.push(item[t]);
+                                break;
+                            }else{
+                                console.error('树组件的初始化数据格式不正确！');
+                                console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", subItem: []}]');
+                                item = [];
+                                return item;
+                            }
+                        }
                     }
                 }
+                this.renewTreeStatus();
+                if (item.length>0){
+                    return item[item.length - 1];
+                }
+                item.push({id: 1, name: "没有数据", check: false, pid: 0, layer: 0, info: "", subItem:[]});
+                return item[0];
+            }else{
+                console.error('树组件的初始化数据格式不正确！');
+                console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", subItem: []}]');
+
             }
-            this.renewTreeStatus();
-            return item[item.length-1];
+            //如果没有数据，添加默认初始数据
+            item = [];
+            return item;
         },
         getItemInfoFocus:function(id){
             var item =this.getTreeDataById(id);
@@ -347,7 +383,6 @@ Vue.component('tree', {
            if (item==null) return null;
            var p_item = this.getTreeDataById(item.pid);
            for(var i=0;i<p_item.subItem.length;i++){
-               //console.log(i+"="+p_item.subItem[i].id);
                if (p_item.subItem[i].id ==id){
                    p_item.subItem.splice(i,1);
                    return 1;
