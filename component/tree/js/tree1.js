@@ -254,12 +254,18 @@ Vue.component('tree', {
             return false;
         },
         isCreateItem:function(item){
-            if (('subItem' in item) && ('id' in item) && ('name' in item) && ('pid' in item) && ('check' in item) && ('info' in item)){
+            if (('subItem' in item) &&
+                ('id' in item) &&
+                ('name' in item) &&
+                ('pid' in item) &&
+                ('check' in item) &&
+                ('info' in item) &&
+                ('data' in item )){
 
                 return true;
             }
             console.error('树组件的初始化数据格式不正确！');
-            console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", subItem: []}]');
+            console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", data:{},subItem: []}]');
 
             return false;
         },
@@ -312,7 +318,7 @@ Vue.component('tree', {
                                 break;
                             }else{
                                 console.error('树组件的初始化数据格式不正确！');
-                                console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", subItem: []}]');
+                                console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", data:{},subItem: []}]');
                                 item = [];
                                 return item;
                             }
@@ -323,11 +329,11 @@ Vue.component('tree', {
                 if (item.length>0){
                     return item[item.length - 1];
                 }
-                item.push({id: 1, name: "没有数据", check: false, pid: 0, layer: 0, info: "", subItem:[]});
+                item.push({id: 1, name: "没有数据", check: false, pid: 0, layer: 0, info: "", data:{},subItem:[]});
                 return item[0];
             }else{
                 console.error('树组件的初始化数据格式不正确！');
-                console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", subItem: []}]');
+                console.info('需要的格式：[{id: 1, name: "公司名称", check: false, pid: 0, layer: 0, info: "", data:{},subItem: []}]');
 
             }
             //如果没有数据，添加默认初始数据
@@ -371,15 +377,16 @@ Vue.component('tree', {
         },
         addChildNode:function(curId,id,name,check,info){//添加下级节点
             var item = this.getTreeDataById(curId);
-            item.subItem.push({pid:item.id,id:id,name:name,check:check,info:info,layer:item.layer+1,subItem:[]});
+            item.subItem.push({pid:item.id,id:id,name:name,check:check,info:info,layer:item.layer+1,data:{},subItem:[]});
             return item;
 
         },
-        updateNodeData:function(curId,name,check,info){//编辑当前节点数据
+        updateNodeData:function(curId,name,check,info,data){//编辑当前节点数据
             var item = this.getTreeDataById(curId);
             item.name = name;
             item.check = check;
             item.info = info;
+            item.data = data;
             return item;
         },
         removeNode:function(id){//删除当前节点，同时子节点
@@ -403,6 +410,7 @@ Vue.component('tree', {
             treeData.check = _item.check;
             treeData.info = _item.info;
             treeData.layer = _item.layer;
+            treeData.data = _item.data;
             treeData.subItem = _item.subItem;
         }
 
