@@ -24,7 +24,7 @@ Vue.component('item',{
         '               <div v-bind:class="item.subItem.length>0 ? icon_p_class:icon_c_class" ></div>' +
         '               <input type="radio"  style="display:none;" name="tree_select" v-model="selValue.selectId" v-bind:value="item.id"/>' +
         '           </div>\n' +
-        '           <div class="info"  v-on:click="selectItem(item)" v-bind:class="selectedStatus(item)">' +
+        '           <div class="info"  v-on:click="selectItem(item)" v-bind:class="selectedStatus(item)" v-bind:id="locationName+item.id">' +
         '               <span v-on:dblclick.stop="editItem" :title="item.name" >{{item.name}}</span>' +
         '               <input type="text" class="edit" style="display:none;" v-bind:style="tw_info(item)" v-model="item.name" v-on:blur="cancelEdit(item)">' +
         '               <div style="padding-left:15px;">{{item.info}}</div>' +
@@ -38,6 +38,7 @@ Vue.component('item',{
             icon_p_class:'icon',
             icon_c_class:'icon_child',
             liItemName:'item',
+            locationName:'location',
             selItemId:'',
             timeFn:null,
             sel_item:null,
@@ -333,10 +334,13 @@ Vue.component('tree', {
             item = [];
             return item;
         },
-        getItemInfoFocus:function(id){
+        getItemInfoFocus:function(id){//根据ID获取节点焦点
             var item =this.getTreeDataById(id);
             this.selValue.selectName = item.name;
             this.selValue.selectId = item.id;
+            var target = document.getElementById("location"+id);
+            console.log(target);
+            target.scrollIntoView(true);
             return item;
         },
         getTreeDataById:function(id){//根据id查询树节点数据

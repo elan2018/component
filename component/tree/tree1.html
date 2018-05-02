@@ -31,7 +31,7 @@
     <div>
         <label>{{title}}</label>
     </div>
-    <div style="width:350px;height:300px;border:1px solid #dddddd;float:left;overflow: auto;">
+    <div style="width:350px;height:200px;border:1px solid #dddddd;float:left;overflow: auto;">
         <tree
                 ref="tree"
                 v-bind:items="tree.item"
@@ -165,7 +165,7 @@
                     this.$refs.tree.addChildNode(111,1112,'我是子级新增的',false,'0人');
                 },
                 selected:function(){
-                    this.$refs.tree.getItemInfoFocus(11);
+                    this.$refs.tree.getItemInfoFocus(111111);
                 },
                 update:function(){
                     this.$refs.tree.updateNodeData(112,'我是更新的',true,'10人');
