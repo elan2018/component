@@ -184,3 +184,67 @@
     );
 </script>
 ```
+## lazy-load v1.0
+> create：2018-05-04 <br>
+> author: 廖永生 <br>
+> description:延时加载图片，当滚动到图片元素时，才请求加载图片，未加载完成时，可以显示随机颜色或loading图片,删除图片数据后，会显示空白图
+### 更新
+1.2018-05-04
+* 创建
+* 开发版
+
+### 用法
+``` 
+基本(未加载时，显示默认图片）：
+<img id="img1" v-lazy-load="'pic.jpg'">
+默认随机颜色：
+<img id="img1" v-lazy-load:color="'pic.jpg'">
+
+```
+### 例子
+[查看完整的例子](https://github.com/elan2018/component/blob/dev2.1/component/lazy-load/lazy-load.html)
+```
+<div id="app" class="container-fluid ">
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <img id="img1" class="lazy" v-lazy-load:color.debug="pic[0]">
+
+
+            <img id="img2" class="lazy" v-lazy-load:blank="pic[1]">
+
+
+            <img id="img3" class="lazy" v-lazy-load:blank="pic[2]">
+
+            <img id="img4" class="lazy" v-lazy-load:color="pic[3]">
+
+
+            <img id="img5" class="lazy" v-lazy-load:color="pic[4]">
+
+
+            <img id="img6" class="lazy" v-lazy-load:blank="pic[5]">
+
+
+            <img id="img7" class="lazy" v-lazy-load:color="pic[4]">
+
+
+            <img id="img8" class="lazy" v-lazy-load:color="pic[5]">
+        </div>
+    </div>
+</div>
+<script src="../../js/jquery-3.3.1.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="js/lazy-load.js"></script>
+<script>
+    let lazy = new Vue({
+        el: '#app',
+        data: {
+
+            pic: ['../../images/1.jpg', '../../images/2.jpg', '../../images/3.jpg', '../../images/4.jpg', '../../images/5.jpg', '../../images/6.jpg'],
+
+        }
+    });
+
+</script>
+
+```
