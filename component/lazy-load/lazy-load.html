@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>懒加载图片</title>
+    <link rel="../../css/bootstrap.css" type="text/css">
+    <style>
+
+        .space {
+            width: 50px;
+            height: 50px;
+        }
+
+        img.lazy {
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<h1>懒加载插件Demo</h1>
+<h1>Vue插件</h1>
+<div id="app" class="container-fluid ">
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <img id="img1" class="lazy" v-lazy-load:color.debug="pic[0]">
+
+
+            <img id="img2" class="lazy" v-lazy-load:blank="pic[1]">
+
+
+            <img id="img3" class="lazy" v-lazy-load:blank="pic[2]">
+
+            <img id="img4" class="lazy" v-lazy-load:color="pic[3]">
+
+
+            <img id="img5" class="lazy" v-lazy-load:color="pic[4]">
+
+
+            <img id="img6" class="lazy" v-lazy-load:blank="pic[5]">
+
+
+            <img id="img7" class="lazy" v-lazy-load:color="pic[6]">
+
+
+            <img id="img8" class="lazy" v-lazy-load:color="pic[7]">
+        </div>
+    </div>
+</div>
+<script src="../../js/jquery-3.3.1.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="js/lazy-load.js"></script>
+<script>
+    let lazy = new Vue({
+        el: '#app',
+        data: {
+
+            pic: ['images/1.jpg', 'images/2.jpg', 'images/3.jpg', 'images/4.jpg', 'images/5.jpg', 'images/6.jpg', 'images/7.jpg', 'images/8.jpg'],
+
+        }
+    });
+
+</script>
+</body>
+</html>
