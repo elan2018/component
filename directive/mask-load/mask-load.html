@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>加载数据时添加遮罩层，数据返回后并自动关闭</title>
+    <link rel="stylesheet" href="css/mask-load.css">
+</head>
+<body>
+
+<div id="app" style="width:100%;height:100%;">
+    <div style="float:left;">
+        1.按钮的点击：可以控制按钮是否遮罩，同时也可以指定数据显示区的遮罩<br>
+        <pre>
+        &lt;button v-mask-load:click.debug="btnMask()">单击事件的请求&lt;/button>
+       按钮及两个区域会出现数据的加载动画
+    </pre>
+        <button v-mask-load:click.debug="btnMask()">单击事件的请求</button>
+        <div id="info" style="width:100px;height:100px;border: 1px solid #aaaaaa;">
+            {{info}}
+        </div>
+        <div id="info2" style="width:200px;height:200px;border: 1px solid #aaaaaa;">
+            {{info}}
+        </div>
+    </div>
+    <div style="margin-left:20px;float:left;">
+        2.下拉的改变事件：
+        <select v-mask-load:change.debug="selectMask()">
+            <option value="11111">111111111</option>
+            <option value="2222">22222222</option>
+            <option value="3333">333333333</option>
+            <option value="4444">444444444</option>
+        </select>
+        <div id="other" style="width:550px;height:410px;border: 1px solid #aaaaaa;">
+            {{selInfo}}
+        </div>
+    </div>
+    <div style="clear:both;margin-top:20px;">
+    3.单独为某个元素的处理方法进行遮罩（比如：对大数据量进行加工）
+    <pre>
+        &lt;button @click="doWork">全屏遮罩，不请求后台服务&lt;/button>
+    </pre>
+    <button @click="doWork">全屏遮罩，不请求后台服务</button>
+
+        <p>{{doInfo}}</p>
+    </div>
+</div>
+
+<script src="../../js/jquery-3.3.1.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="js/mask-load.js"></script>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            req: {
+                url: 'http://localhost:8763/menu?userId=1',
+                method: 'get',
+                data: {}
+            },
+            info: '',
+            selInfo: '',
+            dataArea: [{name: 'info', animationId: 3}, {name: 'info2', animationId: 2}],
+            req1: {
+                url: 'http://localhost:8763/menu?userId=2',
+                method: 'get',
+                data: {}
+            },
+            doInfo:''
+        },
+        methods: {
+            show: function (data) {
+                console.log('回调方法:');
+
+                this.info = this.info + data.message ;
+            },
+            doWork: function () {
+                let _self = this;
+                _self.doInfo='数据正在处理...........';
+                let maskLoad = Dolphin_Loading.create();
+                maskLoad.loading();
+                let close = setTimeout(function () {
+                    _self.doInfo='数据已经处理完成!';
+
+                    maskLoad.loading_close('body');
+                    clearTimeout(close);
+                }, 3000)
+            },
+            selChange: function (data) {
+                this.selInfo = data[1].pic;
+            },
+            btnMask: function () {
+                return {
+                    callback: this.show,
+                    request: this.req,
+                    maskArea: this.dataArea,
+                    self: true,
+                    animationId: 4
+                }
+            },
+            selectMask: function () {
+                return {
+                    callback: this.selChange,
+                    request: this.req1,
+                    maskArea: [{name: 'other', animationId: 1}],
+                    self: true,
+                    animationId: 0
+                }
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
