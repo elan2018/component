@@ -24,12 +24,20 @@
     </div>
     <div style="margin-left:20px;float:left;">
         2.下拉的改变事件：
-        <select v-mask-load:change.debug="selectMask()">
-            <option value="11111">111111111</option>
-            <option value="2222">22222222</option>
-            <option value="3333">333333333</option>
-            <option value="4444">444444444</option>
+        <button @click="add">改变参数</button>
+        <select v-mask-load:change.debug="selectMask()" @change="look" v-model="id">
+            <option value="1">111111111</option>
+            <option value="2">22222222</option>
+            <option value="3">333333333</option>
+            <option value="4">444444444</option>
         </select>
+        <select @change="look" v-model="val">
+            <option value="11">111111111</option>
+            <option value="22">22222222</option>
+            <option value="33">333333333</option>
+            <option value="44">444444444</option>
+        </select>
+        {{id}}
         <div id="other" style="width:550px;height:410px;border: 1px solid #aaaaaa;">
             {{selInfo}}
         </div>
@@ -55,7 +63,7 @@
             req: {
                 url: 'http://localhost:8763/menu?userId=1',
                 method: 'get',
-                data: {}
+                data: {id:0}
             },
             info: '',
             selInfo: '',
@@ -65,9 +73,18 @@
                 method: 'get',
                 data: {}
             },
-            doInfo:''
+            doInfo:'',
+            id:0,
+            val:11
         },
         methods: {
+            add:function(){
+              this.id = this.id +1;
+            },
+            look:function () {
+              console.log(this.id);
+              this.req1.data={id:this.id};
+            },
             show: function (data) {
                 console.log('回调方法:');
 
@@ -89,6 +106,7 @@
                 this.selInfo = data[1].pic;
             },
             btnMask: function () {
+                this.req.data ={id:this.id};
                 return {
                     callback: this.show,
                     request: this.req,
@@ -98,6 +116,9 @@
                 }
             },
             selectMask: function () {
+
+
+
                 return {
                     callback: this.selChange,
                     request: this.req1,
