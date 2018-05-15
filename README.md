@@ -1,4 +1,4 @@
-## Tree v2.0
+## Tree v2.0(组件)
 > create：2018-04-17 <br>
 > update：2018-04-28 <br>
 > author: 廖永生
@@ -184,7 +184,7 @@
     );
 </script>
 ```
-## lazy-load v1.0
+## lazy-load v1.0（指令）
 > create：2018-05-04 <br>
 > author: 廖永生 <br>
 > description:延时加载图片，当滚动到图片元素时，才请求加载图片，未加载完成时，可以显示随机颜色或loading图片,删除图片数据后，会显示空白图
@@ -248,3 +248,6 @@
 </script>
 
 ```
+
+## mask-loading v1.0（插件）
+## data-loading v1.0(指令)

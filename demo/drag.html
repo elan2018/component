@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{
+            margin:0;
+            position: relative;
+        }
+        img{
+            position:absolute;
+        }
+    </style>
+</head>
+<body>
+<h3>随着鼠标拖动而移动的小飞机</h3>
+<!--<img id="p3" src="../images/people.png" alt=""/>-->
+<img id="p4" src="../images/people.png" alt=""/>
+<script>
+
+    // p3.ondragstart=function(e){
+    //     console.log('事件源p3开始拖动');
+    //     //记录刚一拖动时，鼠标在飞机上的偏移量
+    //     offsetX= e.offsetX;
+    //     offsetY= e.offsetY;
+    // }
+    // p3.ondrag=function(e){
+    //     console.log('事件源p3拖动中');
+    //     var x= e.pageX;
+    //     var y= e.pageY;
+    //     console.log(x+'-'+y);
+    //     //drag事件最后一刻，无法读取鼠标的坐标，pageX和pageY都变为0
+    //     if(x==0 && y==0){
+    //         return; //不处理拖动最后一刻X和Y都为0的情形
+    //     }
+    //     x-=offsetX;
+    //     y-=offsetY;
+    //
+    //     p3.style.left=x+'px';
+    //     p3.style.top=y+'px';
+    // }
+    // p3.ondragend=function(){
+    //     console.log('源对象p3拖动结束');
+    // }
+    var p4=document.getElementById("p4");
+    p4.ontouchstart=function(e){
+        e.preventDefault();//阻止其他事件
+        console.log('事件源p4开始拖动');
+        //记录刚一拖动时，鼠标在飞机上的偏移量
+        offsetX1= e.offsetX;
+        offsetY1= e.offsetY;
+    }
+
+    p4.ontouchmove=function(e){
+        e.preventDefault();//阻止其他事件
+        console.log('事件源p4拖动中');
+        var x= e.pageX;
+        var y= e.pageY;
+        console.log(x+'-'+y);
+        //drag事件最后一刻，无法读取鼠标的坐标，pageX和pageY都变为0
+        if(x==0 && y==0){
+            return; //不处理拖动最后一刻X和Y都为0的情形
+        }
+        x-=offsetX1;
+        y-=offsetY1;
+
+        p4.style.left=x+'px';
+        p4.style.top=y+'px';
+    }
+    p4.ontouchend=function(){
+        console.log('源对象p4拖动结束');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>手机拖拽</title>
+</head>
+<body>
+
+<div id="div1" style="width: 100px;height: 100px;border: 1px solid red;position: absolute;left: 0;top: 0;"></div>
+
+<script>
+    var div1= document.getElementById('div1');
+    var diX = diY = 0;
+    addTouchListener(div1);
+    function addTouchListener(obj) {
+
+        obj.addEventListener('touchstart', function (event) {
+            event.preventDefault();//阻止其他事件
+            if (event.targetTouches.length == 1) {
+                var touch = event.targetTouches[0];     // 把元素放在手指所在的位置
+                disX = touch.pageX - div1.offsetLeft;   // 鼠标横坐标 - div1的left
+                disY = touch.pageY - div1.offsetTop;    // 鼠标纵坐标 - div1的top
+            }
+            obj.addEventListener('touchmove', function (event) {
+                event.preventDefault();
+
+                // 如果这个元素的位置内只有一个手指的话
+                if (event.targetTouches.length == 1) {
+                    var touch = event.targetTouches[0];  // 把元素放在手指所在的位置
+                    var x = touch.pageX - disX;
+                    var y = touch.pageY - disY;
+                    var window_width = document.documentElement.clientWidth - obj.offsetWidth;
+                    var window_height = document.documentElement.clientHeight - obj.offsetHeight;
+
+                    x = (x < 0) ? 0 : x;                          // 当div1到窗口最左边时
+                    x = (x > window_width) ? window_width : x;    // 当div1到窗口最右边时
+                    y = (y < 0) ? 0 : y;                          // 当div1到窗口最上边时
+                    y = (y > window_height) ? window_height : y;  // 当div1到窗口最下边时
+
+                    obj.style.left = x + "px";
+                    obj.style.top = y + "px";
+                }
+
+            }, false)
+
+        }, false);
+    }
+</script>
+</body>
+</html>
+
