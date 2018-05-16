@@ -175,7 +175,7 @@ Vue.directive('mask-load', {
                     method = request.method;
                     let ajax_call={
                         url: option['request'].url, data: option['request'].data,
-                        success: function (result) {
+                        success: function (result,textStatus,request) {
                             if (binding.modifiers.debug==true) {
                                 console.log('ajax请求完成');
                             }
@@ -186,7 +186,11 @@ Vue.directive('mask-load', {
                             if (result.code==undefined || result.message==undefined || result.data==undefined){
                                 console.warn('数据返回格式错误！',result);
                             }
-                            option['callback'](result);
+                            if(method=='post'){
+                                option['callback'](result,request);
+                            }else {
+                                option['callback'](result);
+                            }
                         },
                         error:function(XMLHttpRequest, textStatus, errorThrown){
                             console.error(XMLHttpRequest.status);
