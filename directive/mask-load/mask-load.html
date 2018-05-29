@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>加载数据时添加遮罩层，数据返回后并自动关闭</title>
-    <link rel="stylesheet" href="css/mask-load.css">
+    <link rel="stylesheet" href="css/mask-load1.css">
 </head>
 <body>
 
@@ -55,7 +55,7 @@
 
 <script src="../../js/jquery-3.3.1.min.js"></script>
 <script src="../../js/vue.js"></script>
-<script src="js/mask-load.js"></script>
+<script src="js/mask-load1.js"></script>
 <script>
     let app = new Vue({
         el: '#app',
@@ -74,7 +74,7 @@
                 data: {}
             },
             doInfo:'',
-            id:0,
+            id:2,
             val:11
         },
         methods: {
@@ -112,13 +112,10 @@
                     request: this.req,
                     maskArea: this.dataArea,
                     self: true,
-                    animationId: 4
+                    animationId: 3
                 }
             },
             selectMask: function () {
-
-
-
                 return {
                     callback: this.selChange,
                     request: this.req1,
