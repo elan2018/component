@@ -34,7 +34,7 @@ DOLPHIN_HTTP_TEMPLATE.install=function(Vue,options){
     }
 
     //获取返回的相关信息
-    Vue.prototype.getHelpInfo=(data,infos)=>{
+    Vue.prototype.$getHelpInfo=(data,infos)=>{
         checkData(data);
         if(data.info==undefined){
             return ""
